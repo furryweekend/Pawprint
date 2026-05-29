@@ -11,10 +11,10 @@ An open-source, self-hosted link-in-bio page with click tracking analytics that 
 - **3 button styles** - filled, outlined, and soft/glassmorphism
 - **Click analytics** - track total clicks, clicks over time, top referrers, and countries
 - **Password-protected analytics dashboard** at `/analytics`
-- **Admin panel** at `/admin` — edit your config live through a web UI (stored in KV)
-- **Configuration-driven** — edit `config.json` and push, or use the admin panel
-- **Zero cost** — runs on Cloudflare Workers free tier with D1 for analytics
-- **One-click deploy** — use the button above
+- **Admin panel** at `/admin` - edit your config live through a web UI (stored in KV)
+- **Configuration-driven** - edit `config.json` and push, or use the admin panel
+- **Zero cost** - runs on Cloudflare Workers free tier with D1 for analytics
+- **One-click deploy** - use the button above
 
 ## Quick Start
 
