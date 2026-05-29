@@ -3,7 +3,7 @@ import type { Theme } from './types';
 const gradients: Record<string, string> = {
 	sunset: 'linear-gradient(135deg, #f97316, #ec4899)',
 	ocean: 'linear-gradient(135deg, #0ea5e9, #6366f1)',
-	forest: 'linear-gradient(135deg, #22c55e, #14b8a6)',
+	forest: 'linear-gradient(135deg, #06350a, #000709)',
 	midnight: 'linear-gradient(135deg, #1e1b4b, #312e81)',
 	aurora: 'linear-gradient(135deg, #a855f7, #06b6d4)',
 	ember: 'linear-gradient(135deg, #dc2626, #f59e0b)',
@@ -40,10 +40,29 @@ export function getButtonStyles(theme: Theme): string {
 	return `${base} background: ${color}; color: ${textColor}; border: none;`;
 }
 
+export function getContainerStyles(theme:Theme): string {
+    const radius = theme.containerRadius ?? '12px';
+    const style = theme.container ?? 'none';
+    const color = theme.containerColor ?? '#ffffff';
+
+    const base = `border-radius: ${radius}; padding: 25px;`;
+
+    if (style === 'filled') {
+        return `${base} background: ${color}; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);`;
+    }
+    if (style === 'outlined') {
+        return `${base}; border: 2px solid ${color};`;
+    }
+    if (style === 'glass') {
+        return `${base}; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); background: rgba(255, 255, 255, 0.2); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.3);`
+    }
+
+    return ``;
+}
+
 export function getFontImport(theme: Theme): string {
 	const font = theme.font ?? 'Inter';
-	const encoded = encodeURIComponent(font);
-	return `@import url('https://fonts.googleapis.com/css2?family=${encoded}:wght@400;500;600;700&display=swap');`;
+	return `@import url('https://fonts.googleapis.com/css2?family=${font}:wght@400;500;600;700&display=swap');`;
 }
 
 export { gradients };
