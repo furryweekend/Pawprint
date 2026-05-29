@@ -104,23 +104,6 @@ Pick **one** of these in the `theme` object:
 | `slate` | Dark Gray → Darker Gray |
 | `candy` | Pink → Purple → Blue |
 
-#### Custom Fonts
-
-The `font` field in your theme config accepts any [Google Fonts](https://fonts.google.com/) family name:
-
-```jsonc
-{
-  "theme": {
-    "font": "Poppins"       // Clean and modern
-    // "font": "Playfair Display"  // Elegant serif
-    // "font": "JetBrains Mono"    // Monospace/techy
-    // "font": "Nunito"            // Friendly and rounded
-  }
-}
-```
-
-The font is loaded automatically from Google Fonts CDN. If omitted, it defaults to `Inter`.
-
 #### Button Styles
 
 | Style | Description |
