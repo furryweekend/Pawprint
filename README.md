@@ -11,7 +11,8 @@ An open-source, self-hosted link-in-bio page that runs entirely on [Cloudflare W
 - **3 button styles** — filled, outlined, and soft/glassmorphism
 - **Click analytics** — track total clicks, clicks over time, top referrers, and countries
 - **Password-protected analytics dashboard** at `/analytics`
-- **Configuration-driven** — edit one JSON file, push, done
+- **Admin panel** at `/admin` — edit your config live through a web UI (stored in KV)
+- **Configuration-driven** — edit `config.json` and push, or use the admin panel
 - **Zero cost** — runs on Cloudflare Workers free tier with D1 for analytics
 - **One-click deploy** — use the button above
 
@@ -24,7 +25,14 @@ An open-source, self-hosted link-in-bio page that runs entirely on [Cloudflare W
 
 ## Configuration
 
-Everything is configured in `config.json` at the root of the repository:
+There are two ways to configure your Pawprint page:
+
+1. **Admin panel** — visit `/admin` on your deployed worker, log in with the same password as analytics, and edit everything through a web form. Changes are saved to Cloudflare KV and take effect instantly.
+2. **`config.json`** — edit the file directly and push. This serves as the default/fallback when KV is empty (e.g. on first deploy).
+
+KV config takes priority over `config.json`. If you've made changes via the admin panel, those will be used.
+
+### config.json
 
 ```jsonc
 {
@@ -96,6 +104,23 @@ Pick **one** of these in the `theme` object:
 | `slate` | Dark Gray → Darker Gray |
 | `candy` | Pink → Purple → Blue |
 
+#### Custom Fonts
+
+The `font` field in your theme config accepts any [Google Fonts](https://fonts.google.com/) family name:
+
+```jsonc
+{
+  "theme": {
+    "font": "Poppins"       // Clean and modern
+    // "font": "Playfair Display"  // Elegant serif
+    // "font": "JetBrains Mono"    // Monospace/techy
+    // "font": "Nunito"            // Friendly and rounded
+  }
+}
+```
+
+The font is loaded automatically from Google Fonts CDN. If omitted, it defaults to `Inter`.
+
 #### Button Styles
 
 | Style | Description |
@@ -103,6 +128,18 @@ Pick **one** of these in the `theme` object:
 | `filled` | Solid background with text color |
 | `outlined` | Transparent with colored border |
 | `soft` | Translucent background with blur effect |
+
+## Admin Panel
+
+Visit `/admin` on your deployed worker to edit your config through a web UI. Uses the same password as the analytics dashboard.
+
+From the admin panel you can edit:
+- Profile info (name, bio, avatar, header)
+- Links (add, remove, reorder)
+- Social media accounts
+- Theme settings (gradient, colors, fonts, button styles)
+
+Changes are saved to Cloudflare KV and take effect immediately — no redeploy needed.
 
 ## Analytics
 
@@ -141,6 +178,8 @@ npm run dev
 ├── src/
 │   ├── index.ts             # Routes and click tracking
 │   ├── render.ts            # Profile page HTML renderer
+│   ├── admin.ts             # Admin panel HTML renderer
+│   ├── config.ts            # Config loading (KV + file fallback)
 │   ├── theme.ts             # Gradient presets and CSS generation
 │   ├── icons.ts             # SVG social media and link icons
 │   ├── auth.ts              # Session cookie auth
@@ -157,6 +196,7 @@ npm run dev
 
 - [Cloudflare Workers](https://workers.cloudflare.com) — Edge runtime
 - [H3](https://h3.dev) — HTTP framework
+- [Cloudflare KV](https://developers.cloudflare.com/kv/) — Config storage for admin panel
 - [Cloudflare D1](https://developers.cloudflare.com/d1/) — SQLite analytics database
 - [Chart.js](https://www.chartjs.org) — Analytics charts
 - TypeScript

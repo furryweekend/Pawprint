@@ -80,6 +80,94 @@ describe('Auth', () => {
 	});
 });
 
+describe('Admin', () => {
+	it('shows login page when unauthenticated', async () => {
+		const res = await SELF.fetch('https://localhost/admin');
+		expect(res.status).toBe(200);
+		const html = await res.text();
+		expect(html).toContain('Pawprint Admin');
+		expect(html).toContain('password');
+		expect(html).not.toContain('cfg-name');
+	});
+
+	it('shows admin form when authenticated', async () => {
+		const cookie = await getAuthCookie();
+		const res = await SELF.fetch('https://localhost/admin', {
+			headers: { Cookie: cookie },
+		});
+		expect(res.status).toBe(200);
+		const html = await res.text();
+		expect(html).toContain('cfg-name');
+		expect(html).toContain('Save Changes');
+	});
+
+	it('rejects unauthenticated config API requests', async () => {
+		const res = await SELF.fetch('https://localhost/api/config');
+		expect(res.status).toBe(401);
+	});
+
+	it('returns config via GET /api/config', async () => {
+		const cookie = await getAuthCookie();
+		const res = await SELF.fetch('https://localhost/api/config', {
+			headers: { Cookie: cookie },
+		});
+		expect(res.status).toBe(200);
+		const data = (await res.json()) as { name: string; links: unknown[] };
+		expect(data.name).toBe('Your Name');
+		expect(data.links).toHaveLength(3);
+	});
+
+	it('saves and loads config via KV', async () => {
+		const cookie = await getAuthCookie();
+		const newConfig = {
+			name: 'Updated Name',
+			bio: 'Updated bio',
+			avatar: 'https://example.com/new-avatar.jpg',
+			links: [{ title: 'New Link', url: 'https://new.example.com' }],
+			socials: [{ platform: 'github', url: 'https://github.com/test' }],
+			theme: { gradient: 'ocean', buttonStyle: 'outlined' },
+		};
+
+		const saveRes = await SELF.fetch('https://localhost/api/config', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json', Cookie: cookie },
+			body: JSON.stringify(newConfig),
+		});
+		expect(saveRes.status).toBe(200);
+
+		const getRes = await SELF.fetch('https://localhost/api/config', {
+			headers: { Cookie: cookie },
+		});
+		const data = (await getRes.json()) as { name: string; links: { title: string }[] };
+		expect(data.name).toBe('Updated Name');
+		expect(data.links).toHaveLength(1);
+		expect(data.links[0].title).toBe('New Link');
+	});
+
+	it('serves updated config on profile page after KV save', async () => {
+		const cookie = await getAuthCookie();
+		const newConfig = {
+			name: 'KV Test Name',
+			bio: 'KV bio',
+			avatar: 'https://example.com/kv.jpg',
+			links: [{ title: 'KV Link', url: 'https://kv.example.com' }],
+			socials: [],
+			theme: { gradient: 'sunset' },
+		};
+
+		await SELF.fetch('https://localhost/api/config', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json', Cookie: cookie },
+			body: JSON.stringify(newConfig),
+		});
+
+		const res = await SELF.fetch('https://localhost/');
+		const html = await res.text();
+		expect(html).toContain('KV Test Name');
+		expect(html).toContain('KV bio');
+	});
+});
+
 describe('Analytics API', () => {
 	beforeAll(setupDb);
 
