@@ -1,6 +1,6 @@
 # 🐾 Pawprint
 
-An open-source, self-hosted link-in-bio page that runs entirely on [Cloudflare Workers](https://workers.cloudflare.com). Think Linktree or Carrd, but free, fast, and fully yours.
+An open-source, self-hosted link-in-bio page with click tracking analytics that runs entirely on [Cloudflare Workers](https://workers.cloudflare.com). Think Linktree but free, fast, and fully yours.
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/furryweekend/Pawprint)
 
@@ -8,12 +8,12 @@ An open-source, self-hosted link-in-bio page that runs entirely on [Cloudflare W
 
 - **Profile page** with avatar, header image, bio, links, and social media icons
 - **10 gradient presets** plus custom colors and background images
-- **3 button styles** — filled, outlined, and soft/glassmorphism
-- **Click analytics** — track total clicks, clicks over time, top referrers, and countries
+- **3 button styles** - filled, outlined, and soft/glassmorphism
+- **Click analytics** - track total clicks, clicks over time, top referrers, and countries
 - **Password-protected analytics dashboard** at `/analytics`
-- **Configuration-driven** — edit one JSON file, push, done
-- **Zero cost** — runs on Cloudflare Workers free tier with D1 for analytics
-- **One-click deploy** — use the button above
+- **Configuration-driven** - edit one JSON file, push, and you're done
+- **Zero cost** - runs on Cloudflare Workers free tier with D1 for analytics
+- **One-click deploy** - use the button above
 
 ## Quick Start
 
