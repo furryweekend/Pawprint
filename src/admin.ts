@@ -1,4 +1,19 @@
 import type { PawprintConfig } from './types';
+import { getSocialIcon, getLinkIcon } from './icons';
+
+function socialIconsMap(): Record<string, string> {
+	const platforms = ['twitter', 'github', 'instagram', 'youtube', 'discord', 'twitch', 'mastodon', 'bluesky', 'telegram', 'linkedin', 'tiktok', 'email'];
+	const map: Record<string, string> = {};
+	for (const p of platforms) map[p] = getSocialIcon(p);
+	return map;
+}
+
+function linkIconsMap(): Record<string, string> {
+	const icons = ['globe', 'pencil', 'heart', 'star', 'link', 'music', 'shop', 'coffee', 'camera', 'book'];
+	const map: Record<string, string> = {};
+	for (const i of icons) map[i] = getLinkIcon(i);
+	return map;
+}
 
 function escapeHtml(str: string): string {
 	return str
@@ -294,9 +309,8 @@ export function renderAdminPage(config: PawprintConfig | null): string {
 	<div class="preview-panel">
 		<div class="preview-header">
 			<h3>Preview</h3>
-			<button class="preview-btn" onclick="updatePreview()">Refresh</button>
 		</div>
-		<iframe id="preview-frame" class="preview-frame" src="/"></iframe>
+		<iframe id="preview-frame" class="preview-frame"></iframe>
 	</div>
 
 	<div id="toast" class="toast"></div>
@@ -304,6 +318,107 @@ export function renderAdminPage(config: PawprintConfig | null): string {
 	<script>
 		const originalConfig = ${configJson};
 		let previewDebounce = null;
+
+		const GRADIENTS = {
+			sunset: 'linear-gradient(135deg, #f97316, #ec4899)',
+			ocean: 'linear-gradient(135deg, #0ea5e9, #6366f1)',
+			forest: 'linear-gradient(135deg, #06350a, #000709)',
+			midnight: 'linear-gradient(135deg, #1e1b4b, #312e81)',
+			aurora: 'linear-gradient(135deg, #a855f7, #06b6d4)',
+			ember: 'linear-gradient(135deg, #dc2626, #f59e0b)',
+			lavender: 'linear-gradient(135deg, #c084fc, #f9a8d4)',
+			cosmic: 'linear-gradient(135deg, #6366f1, #ec4899, #f97316)',
+			slate: 'linear-gradient(135deg, #334155, #1e293b)',
+			candy: 'linear-gradient(135deg, #f472b6, #c084fc, #818cf8)',
+		};
+
+		const SOCIAL_ICONS = ${JSON.stringify(socialIconsMap()).replace(/<\//g, '<\\/')};
+
+		const LINK_ICONS = ${JSON.stringify(linkIconsMap()).replace(/<\//g, '<\\/')};
+
+		function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+		function getPreviewBg(theme) {
+			if (theme.backgroundImage) return "url('" + theme.backgroundImage + "') center/cover no-repeat fixed";
+			if (theme.color) return theme.color;
+			return GRADIENTS[theme.gradient || 'sunset'] || GRADIENTS.sunset;
+		}
+
+		function getPreviewButtonCss(theme) {
+			const color = theme.buttonColor || '#6c63ff';
+			const textColor = theme.buttonTextColor || '#ffffff';
+			const radius = theme.buttonRadius || '12px';
+			const style = theme.buttonStyle || 'filled';
+			const base = 'border-radius:' + radius + ';padding:14px 20px;text-decoration:none;display:flex;align-items:center;gap:10px;font-size:1rem;font-weight:500;transition:transform .15s ease,box-shadow .15s ease;cursor:pointer;width:100%;box-sizing:border-box;justify-content:center;';
+			if (style === 'outlined') return base + 'background:transparent;color:' + color + ';border:2px solid ' + color + ';';
+			if (style === 'soft') return base + 'background:' + color + '22;color:' + color + ';border:none;backdrop-filter:blur(8px);';
+			return base + 'background:' + color + ';color:' + textColor + ';border:none;';
+		}
+
+		function getPreviewContainerCss(theme) {
+			const radius = theme.containerRadius || '12px';
+			const style = theme.container || 'none';
+			const color = theme.containerColor || '#ffffff';
+			const base = 'border-radius:' + radius + ';padding:25px;';
+			if (style === 'filled') return base + 'background:' + color + ';box-shadow:0 10px 15px -3px rgb(0 0 0/0.1),0 4px 6px -4px rgb(0 0 0/0.1);';
+			if (style === 'outlined') return base + 'border:2px solid ' + color + ';';
+			if (style === 'glass') return base + 'backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);background:rgba(255,255,255,0.2);box-shadow:0 4px 30px rgba(0,0,0,0.1);border:1px solid rgba(255,255,255,0.3);';
+			return '';
+		}
+
+		function renderPreviewHtml(cfg) {
+			const theme = cfg.theme || {};
+			const bg = getPreviewBg(theme);
+			const btnCss = getPreviewButtonCss(theme);
+			const contCss = getPreviewContainerCss(theme);
+			const textColor = theme.textColor || '#ffffff';
+			const fontFamily = theme.font || 'Inter';
+			const fontImport = "@import url('https://fonts.googleapis.com/css2?family=" + encodeURIComponent(fontFamily) + ":wght@400;500;600;700&display=swap');";
+			const isBgImage = !!theme.backgroundImage;
+
+			const headerHtml = cfg.header ? '<div class="header"><img src="' + esc(cfg.header) + '" alt="Header" /><' + '/div>' : '';
+
+			const linksHtml = (cfg.links || []).map(function(link, i) {
+				const iconSvg = link.icon && LINK_ICONS[link.icon] ? '<span class="link-icon">' + LINK_ICONS[link.icon] + '<' + '/span>' : '';
+				const emphClass = link.emphasize ? ' bounce-button' : '';
+				return '<a href="#" class="link-button' + emphClass + '" onclick="return false">' + iconSvg + '<span>' + esc(link.title) + '<' + '/span><' + '/a>';
+			}).join('');
+
+			const socialsHtml = (cfg.socials || []).map(function(s) {
+				const icon = SOCIAL_ICONS[s.platform] || '';
+				return '<a href="#" class="social-icon" onclick="return false" title="' + esc(s.platform) + '">' + icon + '<' + '/a>';
+			}).join('');
+
+			var css = [
+				fontImport,
+				' *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}',
+				'body{font-family:"' + fontFamily + '",system-ui,sans-serif;color:' + textColor + ';min-height:100vh;display:flex;justify-content:space-between;flex-direction:column;align-items:flex-start;padding:1rem;background:' + bg + ';' + (isBgImage ? 'background-size:cover;background-position:center;background-attachment:fixed;' : '') + '}',
+				'.container{width:100%;max-width:480px;display:flex;flex-direction:column;align-items:center;gap:1.5rem;margin:auto;' + contCss + '}',
+				'.header{width:100%;border-radius:16px;overflow:hidden;max-height:200px}.header img{width:100%;height:100%;object-fit:cover}',
+				'.avatar{width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid ' + textColor + '33;box-shadow:0 4px 20px rgba(0,0,0,0.15)}',
+				'.name{font-size:1.5rem;font-weight:700;text-align:center}.bio{font-size:0.95rem;opacity:0.85;text-align:center;line-height:1.5;max-width:360px}',
+				'.links{width:100%;display:flex;flex-direction:column;gap:0.75rem}',
+				'.link-button{' + btnCss + '}.link-button:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.2)}',
+				'.link-icon{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center}.link-icon svg{width:100%;height:100%}',
+				'.socials{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:0.5rem}',
+				'.social-icon{width:28px;height:28px;color:' + textColor + ';opacity:0.7;transition:opacity .15s ease,transform .15s ease}.social-icon:hover{opacity:1;transform:scale(1.15)}.social-icon svg{width:100%;height:100%}',
+				'.footer{margin:0 auto;opacity:0.4;font-size:0.75rem}.footer a{color:inherit;text-decoration:none}',
+				'.bounce-button{animation:bounce 2s infinite}@keyframes bounce{0%{transform:scale(1)}10%{transform:scale(1.05)}25%{transform:scale(1)}}',
+			].join('');
+
+			var body = [
+				headerHtml,
+				cfg.avatar ? '<img class="avatar" src="' + esc(cfg.avatar) + '" alt="' + esc(cfg.name) + '" />' : '',
+				'<h1 class="name">' + esc(cfg.name || '') + '<' + '/h1>',
+				'<p class="bio">' + esc(cfg.bio || '') + '<' + '/p>',
+				'<div class="links">' + linksHtml + '<' + '/div>',
+				socialsHtml ? '<div class="socials">' + socialsHtml + '<' + '/div>' : '',
+			].join('');
+
+			return '<!DOCTYPE html><html><head><style>' + css + '<' + '/style><' + '/head><body><div><' + '/div><div class="container">'
+				+ body
+				+ '<' + '/div><div class="footer"><a href="https://github.com/furryweekend/Pawprint">Powered by Pawprint<' + '/a><' + '/div><' + '/body><' + '/html>';
+		}
 
 		function collectConfig() {
 			const links = [];
@@ -371,7 +486,6 @@ export function renderAdminPage(config: PawprintConfig | null): string {
 				});
 				if (!res.ok) throw new Error('Save failed');
 				showToast('Config saved!');
-				updatePreview();
 			} catch (err) {
 				showToast(err.message, true);
 			} finally {
@@ -394,13 +508,14 @@ export function renderAdminPage(config: PawprintConfig | null): string {
 		}
 
 		function updatePreview() {
+			const cfg = collectConfig();
 			const frame = document.getElementById('preview-frame');
-			frame.src = '/?t=' + Date.now();
+			frame.srcdoc = renderPreviewHtml(cfg);
 		}
 
 		function schedulePreviewUpdate() {
 			clearTimeout(previewDebounce);
-			previewDebounce = setTimeout(updatePreview, 500);
+			previewDebounce = setTimeout(updatePreview, 300);
 		}
 
 		function addLink() {
@@ -427,10 +542,12 @@ export function renderAdminPage(config: PawprintConfig | null): string {
 					<label for="link-emph-new-\${idx}">Emphasize (bounce animation)</label>
 				</div>\`;
 			container.appendChild(div);
+			schedulePreviewUpdate();
 		}
 
 		function removeLink(btn) {
 			btn.closest('.link-group').remove();
+			schedulePreviewUpdate();
 		}
 
 		function addSocial() {
@@ -452,11 +569,20 @@ export function renderAdminPage(config: PawprintConfig | null): string {
 					</div>
 				</div>\`;
 			container.appendChild(div);
+			schedulePreviewUpdate();
 		}
 
 		function removeSocial(btn) {
 			btn.closest('.social-group').remove();
+			schedulePreviewUpdate();
 		}
+
+		// Live preview: listen for all form changes
+		document.getElementById('admin-form').addEventListener('input', schedulePreviewUpdate);
+		document.getElementById('admin-form').addEventListener('change', schedulePreviewUpdate);
+
+		// Initial preview render
+		updatePreview();
 	</script>
 </body>
 </html>`;
