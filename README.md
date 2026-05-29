@@ -27,7 +27,7 @@ An open-source, self-hosted link-in-bio page with click tracking analytics that 
 
 There are two ways to configure your Pawprint page:
 
-1. **Admin panel** — visit `/admin` on your deployed worker, log in with the same password as analytics, and edit everything through a web form. Changes are saved to Cloudflare KV and take effect instantly.
+1. **Admin panel** — visit `/admin` on your deployed worker, log in with the admin password you set, and edit everything through a web form. Changes are saved to Cloudflare KV and take effect instantly.
 2. **`config.json`** — edit the file directly and push. This serves as the default/fallback when KV is empty (e.g. on first deploy).
 
 KV config takes priority over `config.json`. If you've made changes via the admin panel, those will be used.
@@ -115,19 +115,6 @@ Pick **one** of these in the `theme` object:
 | `outlined` | Transparent with colored border |
 | `soft` | Translucent background with blur effect |
 
-
-## Admin Panel
-
-Visit `/admin` on your deployed worker to edit your config through a web UI. Uses the same password as the analytics dashboard.
-
-From the admin panel you can edit:
-- Profile info (name, bio, avatar, header)
-- Links (add, remove, reorder)
-- Social media accounts
-- Theme settings (gradient, colors, fonts, button styles)
-
-Changes are saved to Cloudflare KV and take effect immediately — no redeploy needed.
-
 #### Fonts
 
 The font field accepts any [Google Font](https://fonts.google.com/) family name. Browse the catalog, find a font you like, and use its exact name:
@@ -149,6 +136,19 @@ The font field accepts any [Google Font](https://fonts.google.com/) family name.
 | `filled` | Solid background |
 | `outlined` | Transparent with colored border |
 | `glass` | Translucent background with blur effect |
+
+
+## Admin Panel
+
+Visit `/admin` on your deployed worker to edit your config through a web UI. You'll need the password you set during deployment.
+
+From the admin panel you can edit:
+- Profile info (name, bio, avatar, header)
+- Links (add, remove, reorder)
+- Social media accounts
+- Theme settings (gradient, colors, fonts, button styles)
+
+Changes are saved to Cloudflare KV and take effect immediately, no redeploy needed.
 
 
 ## Analytics
