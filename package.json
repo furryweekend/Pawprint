@@ -1,0 +1,29 @@
+{
+	"name": "pawprint",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"dev": "wrangler dev",
+		"build": "wrangler deploy --dry-run",
+		"deploy": "npm run db:migrate && wrangler deploy",
+		"db:migrate": "wrangler d1 migrations apply DB --remote",
+		"test": "vitest",
+		"cf-typegen": "wrangler types"
+	},
+	"cloudflare": {
+		"bindings": {
+			"ANALYTICS_PASSWORD": {
+				"description": "Password to protect your `/analytics` dashboard. Choose something strong — e.g. `openssl rand -hex 16`."
+			}
+		}
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "^0.12.4",
+		"typescript": "^5.5.2",
+		"vitest": "~3.2.0",
+		"wrangler": "^4.86.0"
+	},
+	"dependencies": {
+		"h3": "^2.0.1-rc.20"
+	}
+}

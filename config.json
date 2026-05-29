@@ -1,0 +1,27 @@
+{
+	"name": "Your Name",
+	"bio": "A short bio about yourself.",
+	"avatar": "https://via.placeholder.com/150",
+	"header": "",
+
+	"links": [
+		{ "title": "My Website", "url": "https://example.com", "icon": "globe" },
+		{ "title": "My Blog", "url": "https://blog.example.com", "icon": "pencil" },
+		{ "title": "Support Me", "url": "https://ko-fi.com/example", "icon": "heart" }
+	],
+
+	"socials": [
+		{ "platform": "github", "url": "https://github.com/example" },
+		{ "platform": "twitter", "url": "https://twitter.com/example" }
+	],
+
+	"theme": {
+		"gradient": "sunset",
+		"textColor": "#ffffff",
+		"buttonStyle": "filled",
+		"buttonColor": "#6c63ff",
+		"buttonTextColor": "#ffffff",
+		"buttonRadius": "12px",
+		"font": "Inter"
+	}
+}
