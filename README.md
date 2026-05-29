@@ -154,6 +154,21 @@ npx wrangler d1 migrations apply DB --local
 npm run dev
 ```
 
+### Manual Deployment
+
+If you're deploying manually instead of using the deploy button:
+
+```bash
+# Create KV namespace and update the id in wrangler.jsonc
+npx wrangler kv namespace create CONFIG_KV
+
+# Create D1 database
+npx wrangler d1 create pawprint-analytics
+
+# Update wrangler.jsonc with the IDs from the commands above, then:
+npm run deploy
+```
+
 ## Project Structure
 
 ```
