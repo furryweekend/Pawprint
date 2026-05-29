@@ -36,7 +36,7 @@ Everything is configured in `config.json` at the root of the repository:
 
   // Links
   "links": [
-    { "title": "My Website", "url": "https://example.com", "icon": "globe" },
+    { "title": "My Website", "url": "https://example.com", "icon": "globe", "emphasize": true },
     { "title": "My Blog", "url": "https://blog.example.com", "icon": "pencil" },
     { "title": "Support Me", "url": "https://ko-fi.com/example", "icon": "heart" }
   ],
@@ -56,7 +56,10 @@ Everything is configured in `config.json` at the root of the repository:
     "buttonColor": "#6c63ff",
     "buttonTextColor": "#ffffff",
     "buttonRadius": "12px",
-    "font": "Inter"
+    "font": "Inter",
+    "container": "filled",
+    "containerColor": "#ffffff",
+    "containerRadius": "12px"
   }
 }
 ```
@@ -103,6 +106,29 @@ Pick **one** of these in the `theme` object:
 | `filled` | Solid background with text color |
 | `outlined` | Transparent with colored border |
 | `soft` | Translucent background with blur effect |
+
+#### Fonts
+
+The font field accepts any [Google Font](https://fonts.google.com/) family name. Browse the catalog, find a font you like, and use its exact name:
+
+```jsonc
+{
+  "theme": {
+    "font": "Inter"
+    // "font": "Playfair+Display"
+    // "font": "JetBrains+Mono"
+    // "font": "Nunito"
+  }
+}
+```
+
+#### Container Styles
+| Style | Description |
+|---|---|
+| `filled` | Solid background |
+| `outlined` | Transparent with colored border |
+| `glass` | Translucent background with blur effect |
+
 
 ## Analytics
 
@@ -153,14 +179,10 @@ npm run dev
 └── package.json
 ```
 
-## Tech Stack
-
-- [Cloudflare Workers](https://workers.cloudflare.com) — Edge runtime
-- [H3](https://h3.dev) — HTTP framework
-- [Cloudflare D1](https://developers.cloudflare.com/d1/) — SQLite analytics database
-- [Chart.js](https://www.chartjs.org) — Analytics charts
-- TypeScript
-
 ## License
 
 Apache 2.0 — see [LICENSE](LICENSE)
+
+___
+
+Made by [Furry Weekend Atlanta](https://furryweekend.com)

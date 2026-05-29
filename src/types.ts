@@ -2,6 +2,7 @@ export interface LinkItem {
 	title: string;
 	url: string;
 	icon?: string;
+    emphasize?: boolean;
 }
 
 export interface SocialItem {
@@ -19,6 +20,9 @@ export interface Theme {
 	buttonTextColor?: string;
 	buttonRadius?: string;
 	font?: string;
+    container?: 'filled' | 'outlined' | 'glass' | 'none';
+    containerColor?: string;
+    containerRadius?: string;
 }
 
 export interface PawprintConfig {
