@@ -13,14 +13,14 @@
 	"kv_namespaces": [
 		{
 			"binding": "CONFIG_KV",
-			"id": "00000000000000000000000000000000"
+			"id": "4758ed0249fc47a1a2f8a71fbd92ed52"
 		}
 	],
 	"d1_databases": [
 		{
 			"binding": "DB",
 			"database_name": "pawprint-analytics",
-			"database_id": "local",
+			"database_id": "03936c0e-d16c-42fa-a7bb-7763d364a4df",
 			"migrations_dir": "./migrations"
 		}
 	]
