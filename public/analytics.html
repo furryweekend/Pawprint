@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Pawprint Analytics</title>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+		*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+		body {
+			font-family: 'Inter', system-ui, sans-serif;
+			background: #0f172a;
+			color: #e2e8f0;
+			min-height: 100vh;
+			padding: 2rem 1rem;
+		}
+
+		.container {
+			max-width: 900px;
+			margin: 0 auto;
+		}
+
+		h1 {
+			font-size: 1.75rem;
+			margin-bottom: 0.5rem;
+		}
+
+		.subtitle {
+			color: #94a3b8;
+			margin-bottom: 2rem;
+		}
+
+		/* Login */
+		#login-form {
+			max-width: 360px;
+			margin: 4rem auto;
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
+		}
+
+		#login-form h2 {
+			text-align: center;
+			font-size: 1.25rem;
+		}
+
+		input[type="password"] {
+			padding: 12px 16px;
+			border-radius: 8px;
+			border: 1px solid #334155;
+			background: #1e293b;
+			color: #e2e8f0;
+			font-size: 1rem;
+			font-family: inherit;
+		}
+
+		input[type="password"]:focus {
+			outline: none;
+			border-color: #6366f1;
+		}
+
+		button {
+			padding: 12px 16px;
+			border-radius: 8px;
+			border: none;
+			background: #6366f1;
+			color: #fff;
+			font-size: 1rem;
+			font-weight: 600;
+			cursor: pointer;
+			font-family: inherit;
+		}
+
+		button:hover { background: #4f46e5; }
+
+		.error {
+			color: #f87171;
+			text-align: center;
+			font-size: 0.875rem;
+		}
+
+		#dashboard { display: none; }
+
+		/* Controls */
+		.controls {
+			display: flex;
+			gap: 0.5rem;
+			margin-bottom: 1.5rem;
+			flex-wrap: wrap;
+		}
+
+		.controls button {
+			padding: 8px 14px;
+			font-size: 0.85rem;
+			background: #1e293b;
+			border: 1px solid #334155;
+		}
+
+		.controls button.active {
+			background: #6366f1;
+			border-color: #6366f1;
+		}
+
+		.controls button:hover:not(.active) {
+			border-color: #6366f1;
+		}
+
+		/* Cards */
+		.card {
+			background: #1e293b;
+			border-radius: 12px;
+			padding: 1.5rem;
+			margin-bottom: 1.5rem;
+			border: 1px solid #334155;
+		}
+
+		.card h3 {
+			font-size: 1rem;
+			color: #94a3b8;
+			margin-bottom: 1rem;
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+		}
+
+		/* Stats grid */
+		.stats-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+			gap: 1rem;
+			margin-bottom: 1.5rem;
+		}
+
+		.stat {
+			background: #1e293b;
+			border-radius: 12px;
+			padding: 1.25rem;
+			border: 1px solid #334155;
+		}
+
+		.stat .label {
+			font-size: 0.8rem;
+			color: #94a3b8;
+			margin-bottom: 0.25rem;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.stat .value {
+			font-size: 1.75rem;
+			font-weight: 700;
+		}
+
+		/* Link table */
+		.link-table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		.link-table th, .link-table td {
+			text-align: left;
+			padding: 10px 12px;
+			border-bottom: 1px solid #334155;
+		}
+
+		.link-table th {
+			color: #94a3b8;
+			font-size: 0.8rem;
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+		}
+
+		.link-table td {
+			font-size: 0.9rem;
+		}
+
+		.link-table tr:last-child td { border-bottom: none; }
+
+		.link-url {
+			color: #94a3b8;
+			font-size: 0.8rem;
+			max-width: 200px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.clicks-count {
+			font-weight: 600;
+			font-variant-numeric: tabular-nums;
+		}
+
+		/* Chart */
+		.chart-wrapper {
+			position: relative;
+			height: 250px;
+		}
+
+		/* Responsive */
+		@media (max-width: 600px) {
+			.stats-grid { grid-template-columns: 1fr 1fr; }
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div id="login-section">
+			<form id="login-form">
+				<h2>🐾 Pawprint Analytics</h2>
+				<input type="password" id="password" placeholder="Enter your analytics password" required />
+				<button type="submit">Log In</button>
+				<p class="error" id="login-error"></p>
+			</form>
+		</div>
+
+		<div id="dashboard">
+			<h1>🐾 Pawprint Analytics</h1>
+			<p class="subtitle">Link click analytics dashboard</p>
+
+			<div class="controls">
+				<button data-days="7">7 days</button>
+				<button data-days="30" class="active">30 days</button>
+				<button data-days="90">90 days</button>
+				<button data-days="365">1 year</button>
+			</div>
+
+			<div class="stats-grid" id="stats-grid"></div>
+
+			<div class="card">
+				<h3>Clicks over time</h3>
+				<div class="chart-wrapper">
+					<canvas id="timeline-chart"></canvas>
+				</div>
+			</div>
+
+			<div class="card">
+				<h3>Links</h3>
+				<table class="link-table">
+					<thead>
+						<tr>
+							<th>Title</th>
+							<th>URL</th>
+							<th>Clicks</th>
+						</tr>
+					</thead>
+					<tbody id="links-table-body"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		let currentDays = 30;
+		let timelineChart = null;
+
+		document.getElementById('login-form').addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const password = document.getElementById('password').value;
+			const errorEl = document.getElementById('login-error');
+			errorEl.textContent = '';
+
+			try {
+				const res = await fetch('/api/auth', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ password }),
+				});
+
+				if (!res.ok) {
+					errorEl.textContent = 'Invalid password';
+					return;
+				}
+
+				document.getElementById('login-section').style.display = 'none';
+				document.getElementById('dashboard').style.display = 'block';
+				loadAnalytics();
+			} catch {
+				errorEl.textContent = 'Connection error';
+			}
+		});
+
+		document.querySelectorAll('.controls button').forEach((btn) => {
+			btn.addEventListener('click', () => {
+				document.querySelector('.controls .active')?.classList.remove('active');
+				btn.classList.add('active');
+				currentDays = parseInt(btn.dataset.days);
+				loadAnalytics();
+			});
+		});
+
+		async function loadAnalytics() {
+			try {
+				const res = await fetch(`/api/analytics?days=${currentDays}`);
+				if (!res.ok) {
+					if (res.status === 401) {
+						document.getElementById('login-section').style.display = 'block';
+						document.getElementById('dashboard').style.display = 'none';
+					}
+					return;
+				}
+
+				const data = await res.json();
+				renderStats(data);
+				renderTimeline(data.timeline);
+				renderLinksTable(data);
+			} catch (err) {
+				console.error('Failed to load analytics:', err);
+			}
+		}
+
+		function renderStats(data) {
+			const totalClicks = data.totals.reduce((sum, row) => sum + row.clicks, 0);
+			const grid = document.getElementById('stats-grid');
+
+			grid.innerHTML = `
+				<div class="stat">
+					<div class="label">Total Clicks</div>
+					<div class="value">${totalClicks.toLocaleString()}</div>
+				</div>
+				<div class="stat">
+					<div class="label">Total Links</div>
+					<div class="value">${data.links.length}</div>
+				</div>
+				<div class="stat">
+					<div class="label">Time Period</div>
+					<div class="value">${currentDays}d</div>
+				</div>
+			`;
+		}
+
+		function renderTimeline(timeline) {
+			const ctx = document.getElementById('timeline-chart').getContext('2d');
+
+			if (timelineChart) timelineChart.destroy();
+
+			timelineChart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: timeline.map((r) => r.day),
+					datasets: [{
+						label: 'Clicks',
+						data: timeline.map((r) => r.clicks),
+						borderColor: '#6366f1',
+						backgroundColor: 'rgba(99, 102, 241, 0.1)',
+						fill: true,
+						tension: 0.3,
+						borderWidth: 2,
+						pointRadius: 2,
+					}],
+				},
+				options: {
+					responsive: true,
+					maintainAspectRatio: false,
+					plugins: {
+						legend: { display: false },
+					},
+					scales: {
+						x: {
+							ticks: { color: '#94a3b8', maxTicksLimit: 10 },
+							grid: { color: '#334155' },
+						},
+						y: {
+							ticks: { color: '#94a3b8', precision: 0 },
+							grid: { color: '#334155' },
+							beginAtZero: true,
+						},
+					},
+				},
+			});
+		}
+
+		function renderLinksTable(data) {
+			const tbody = document.getElementById('links-table-body');
+			const clickMap = {};
+			data.totals.forEach((row) => {
+				clickMap[row.link_index] = row.clicks;
+			});
+
+			tbody.innerHTML = data.links
+				.map((link, i) => `
+					<tr>
+						<td>${escapeHtml(link.title)}</td>
+						<td class="link-url" title="${escapeHtml(link.url)}">${escapeHtml(link.url)}</td>
+						<td class="clicks-count">${(clickMap[i] || 0).toLocaleString()}</td>
+					</tr>
+				`)
+				.join('');
+		}
+
+		function escapeHtml(str) {
+			const div = document.createElement('div');
+			div.textContent = str;
+			return div.innerHTML;
+		}
+	</script>
+</body>
+</html>
