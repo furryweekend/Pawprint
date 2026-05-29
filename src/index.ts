@@ -1,10 +1,9 @@
 import { H3, H3Event } from 'h3/cloudflare';
 import { renderProfilePage } from './render';
 import { createSession, verifySession, getSessionCookie, parseSessionCookie } from './auth';
-import config from '../config.json';
+import { getConfig, saveConfig } from './config';
+import { renderAdminPage } from './admin';
 import type { PawprintConfig } from './types';
-
-const pawprintConfig = config as PawprintConfig;
 
 const app = new H3();
 
@@ -13,7 +12,7 @@ function getEnv(event: H3Event): Env {
 	return rt?.cloudflare?.env as Env;
 }
 
-// Auth middleware for analytics API routes (skip /api/auth)
+// Auth middleware for API routes (skip /api/auth)
 async function requireAuth(event: H3Event, next: () => unknown) {
 	const path = new URL(event.req.url).pathname;
 	if (path === '/api/auth') return next();
@@ -21,7 +20,7 @@ async function requireAuth(event: H3Event, next: () => unknown) {
 	const env = getEnv(event);
 	const cookie = parseSessionCookie(event.req.headers.get('cookie'));
 
-	if (!cookie || !(await verifySession(cookie, env.ANALYTICS_PASSWORD))) {
+	if (!cookie || !(await verifySession(cookie, env.ADMIN_PASSWORD))) {
 		event.res.status = 401;
 		return { error: 'Unauthorized' };
 	}
@@ -31,8 +30,27 @@ async function requireAuth(event: H3Event, next: () => unknown) {
 app.use('/api/*', requireAuth);
 
 // Profile page
-app.get('/', () => {
-	return new Response(renderProfilePage(pawprintConfig), {
+app.get('/', async (event) => {
+	const env = getEnv(event);
+	const config = await getConfig(env.CONFIG_KV);
+	return new Response(renderProfilePage(config), {
+		headers: { 'Content-Type': 'text/html; charset=utf-8' },
+	});
+});
+
+// Admin page
+app.get('/admin', async (event) => {
+	const env = getEnv(event);
+	const cookie = parseSessionCookie(event.req.headers.get('cookie'));
+
+	if (!cookie || !(await verifySession(cookie, env.ADMIN_PASSWORD))) {
+		return new Response(renderAdminPage(null), {
+			headers: { 'Content-Type': 'text/html; charset=utf-8' },
+		});
+	}
+
+	const config = await getConfig(env.CONFIG_KV);
+	return new Response(renderAdminPage(config), {
 		headers: { 'Content-Type': 'text/html; charset=utf-8' },
 	});
 });
@@ -40,6 +58,7 @@ app.get('/', () => {
 // Click redirect + tracking
 app.get('/click/:index', async (event) => {
 	const env = getEnv(event);
+	const config = await getConfig(env.CONFIG_KV);
 	const indexStr = event.context.params?.index;
 
 	if (indexStr === undefined) {
@@ -48,12 +67,12 @@ app.get('/click/:index', async (event) => {
 	}
 
 	const index = parseInt(indexStr, 10);
-	if (isNaN(index) || index < 0 || index >= pawprintConfig.links.length) {
+	if (isNaN(index) || index < 0 || index >= config.links.length) {
 		event.res.status = 404;
 		return { error: 'Link not found' };
 	}
 
-	const link = pawprintConfig.links[index];
+	const link = config.links[index];
 
 	event.waitUntil(
 		env.DB.prepare(
@@ -81,12 +100,12 @@ app.post('/api/auth', async (event) => {
 	const env = getEnv(event);
 	const body = (await event.req.json()) as { password?: string };
 
-	if (!body.password || body.password !== env.ANALYTICS_PASSWORD) {
+	if (!body.password || body.password !== env.ADMIN_PASSWORD) {
 		event.res.status = 401;
 		return { error: 'Invalid password' };
 	}
 
-	const token = await createSession(env.ANALYTICS_PASSWORD);
+	const token = await createSession(env.ADMIN_PASSWORD);
 	return new Response(JSON.stringify({ ok: true }), {
 		headers: {
 			'Content-Type': 'application/json',
@@ -98,6 +117,7 @@ app.post('/api/auth', async (event) => {
 // Analytics: all links summary
 app.get('/api/analytics', async (event) => {
 	const env = getEnv(event);
+	const config = await getConfig(env.CONFIG_KV);
 	const url = new URL(event.req.url);
 	const days = parseInt(url.searchParams.get('days') ?? '30', 10);
 	const since = new Date(Date.now() - days * 86400000).toISOString();
@@ -118,13 +138,29 @@ app.get('/api/analytics', async (event) => {
 	return {
 		totals: totals.results,
 		timeline: timeline.results,
-		links: pawprintConfig.links,
+		links: config.links,
 	};
+});
+
+// Config API: get current config
+app.get('/api/config', async (event) => {
+	const env = getEnv(event);
+	const config = await getConfig(env.CONFIG_KV);
+	return config;
+});
+
+// Config API: save config
+app.post('/api/config', async (event) => {
+	const env = getEnv(event);
+	const body = (await event.req.json()) as PawprintConfig;
+	await saveConfig(env.CONFIG_KV, body);
+	return { ok: true };
 });
 
 // Analytics: per-link detail
 app.get('/api/analytics/:index', async (event) => {
 	const env = getEnv(event);
+	const config = await getConfig(env.CONFIG_KV);
 	const indexStr = event.context.params?.index;
 
 	if (indexStr === undefined) {
@@ -133,7 +169,7 @@ app.get('/api/analytics/:index', async (event) => {
 	}
 
 	const index = parseInt(indexStr, 10);
-	if (isNaN(index) || index < 0 || index >= pawprintConfig.links.length) {
+	if (isNaN(index) || index < 0 || index >= config.links.length) {
 		event.res.status = 404;
 		return { error: 'Link not found' };
 	}
@@ -164,7 +200,7 @@ app.get('/api/analytics/:index', async (event) => {
 	]);
 
 	return {
-		link: pawprintConfig.links[index],
+		link: config.links[index],
 		totalClicks: (total as Record<string, number> | null)?.clicks ?? 0,
 		timeline: timeline.results,
 		topReferrers: referrers.results,

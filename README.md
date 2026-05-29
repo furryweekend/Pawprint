@@ -11,20 +11,28 @@ An open-source, self-hosted link-in-bio page with click tracking analytics that 
 - **3 button styles** - filled, outlined, and soft/glassmorphism
 - **Click analytics** - track total clicks, clicks over time, top referrers, and countries
 - **Password-protected analytics dashboard** at `/analytics`
-- **Configuration-driven** - edit one JSON file, push, and you're done
+- **Admin panel** at `/admin` - edit your config live through a web UI (stored in KV)
+- **Configuration-driven** - edit `config.json` and push, or use the admin panel
 - **Zero cost** - runs on Cloudflare Workers free tier with D1 for analytics
 - **One-click deploy** - use the button above
 
 ## Quick Start
 
 1. Click the **Deploy to Cloudflare** button above
-2. Set your `ANALYTICS_PASSWORD` when prompted
+2. Set your `ADMIN_PASSWORD` when prompted
 3. Edit `config.json` in your new repository to customize your page
 4. Push your changes — your page auto-deploys
 
 ## Configuration
 
-Everything is configured in `config.json` at the root of the repository:
+There are two ways to configure your Pawprint page:
+
+1. **Admin panel** — visit `/admin` on your deployed worker, log in with the admin password you set, and edit everything through a web form. Changes are saved to Cloudflare KV and take effect instantly.
+2. **`config.json`** — edit the file directly and push. This serves as the default/fallback when KV is empty (e.g. on first deploy).
+
+KV config takes priority over `config.json`. If you've made changes via the admin panel, those will be used.
+
+### config.json
 
 ```jsonc
 {
@@ -130,6 +138,19 @@ The font field accepts any [Google Font](https://fonts.google.com/) family name.
 | `glass` | Translucent background with blur effect |
 
 
+## Admin Panel
+
+Visit `/admin` on your deployed worker to edit your config through a web UI. You'll need the password you set during deployment.
+
+From the admin panel you can edit:
+- Profile info (name, bio, avatar, header)
+- Links (add, remove, reorder)
+- Social media accounts
+- Theme settings (gradient, colors, fonts, button styles)
+
+Changes are saved to Cloudflare KV and take effect immediately, no redeploy needed.
+
+
 ## Analytics
 
 Visit `/analytics` on your deployed worker to access the analytics dashboard. You'll need the password you set during deployment.
@@ -151,13 +172,28 @@ npm install
 npx wrangler types
 
 # Create a .dev.vars file with your password
-echo "ANALYTICS_PASSWORD=test" > .dev.vars
+echo "ADMIN_PASSWORD=test" > .dev.vars
 
 # Create local D1 database and run migrations
 npx wrangler d1 migrations apply DB --local
 
 # Start dev server
 npm run dev
+```
+
+### Manual Deployment
+
+If you're deploying manually instead of using the deploy button:
+
+```bash
+# Create KV namespace and update the id in wrangler.jsonc
+npx wrangler kv namespace create CONFIG_KV
+
+# Create D1 database
+npx wrangler d1 create pawprint-analytics
+
+# Update wrangler.jsonc with the IDs from the commands above, then:
+npm run deploy
 ```
 
 ## Project Structure
@@ -167,6 +203,8 @@ npm run dev
 ├── src/
 │   ├── index.ts             # Routes and click tracking
 │   ├── render.ts            # Profile page HTML renderer
+│   ├── admin.ts             # Admin panel HTML renderer
+│   ├── config.ts            # Config loading (KV + file fallback)
 │   ├── theme.ts             # Gradient presets and CSS generation
 │   ├── icons.ts             # SVG social media and link icons
 │   ├── auth.ts              # Session cookie auth
