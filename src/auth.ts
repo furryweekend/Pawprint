@@ -45,7 +45,7 @@ export async function verifySession(token: string, password: string): Promise<bo
 }
 
 export function getSessionCookie(token: string): string {
-	return `${COOKIE_NAME}=${token}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${SESSION_TTL}`;
+	return `${COOKIE_NAME}=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${SESSION_TTL}`;
 }
 
 export function parseSessionCookie(cookieHeader: string | null): string | null {
