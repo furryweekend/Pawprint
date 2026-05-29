@@ -20,7 +20,7 @@ async function requireAuth(event: H3Event, next: () => unknown) {
 	const env = getEnv(event);
 	const cookie = parseSessionCookie(event.req.headers.get('cookie'));
 
-	if (!cookie || !(await verifySession(cookie, env.ANALYTICS_PASSWORD))) {
+	if (!cookie || !(await verifySession(cookie, env.ADMIN_PASSWORD))) {
 		event.res.status = 401;
 		return { error: 'Unauthorized' };
 	}
@@ -43,7 +43,7 @@ app.get('/admin', async (event) => {
 	const env = getEnv(event);
 	const cookie = parseSessionCookie(event.req.headers.get('cookie'));
 
-	if (!cookie || !(await verifySession(cookie, env.ANALYTICS_PASSWORD))) {
+	if (!cookie || !(await verifySession(cookie, env.ADMIN_PASSWORD))) {
 		return new Response(renderAdminPage(null), {
 			headers: { 'Content-Type': 'text/html; charset=utf-8' },
 		});
@@ -100,12 +100,12 @@ app.post('/api/auth', async (event) => {
 	const env = getEnv(event);
 	const body = (await event.req.json()) as { password?: string };
 
-	if (!body.password || body.password !== env.ANALYTICS_PASSWORD) {
+	if (!body.password || body.password !== env.ADMIN_PASSWORD) {
 		event.res.status = 401;
 		return { error: 'Invalid password' };
 	}
 
-	const token = await createSession(env.ANALYTICS_PASSWORD);
+	const token = await createSession(env.ADMIN_PASSWORD);
 	return new Response(JSON.stringify({ ok: true }), {
 		headers: {
 			'Content-Type': 'application/json',

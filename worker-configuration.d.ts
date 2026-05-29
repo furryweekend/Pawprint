@@ -5,7 +5,7 @@ interface __BaseEnv_Env {
 	CONFIG_KV: KVNamespace;
 	DB: D1Database;
 	ASSETS: Fetcher;
-	ANALYTICS_PASSWORD: string;
+	ADMIN_PASSWORD: string;
 }
 declare namespace Cloudflare {
 	interface GlobalProps {

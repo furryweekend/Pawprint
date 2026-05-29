@@ -5,7 +5,7 @@ async function getAuthCookie(): Promise<string> {
 	const res = await SELF.fetch('https://localhost/api/auth', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ password: env.ANALYTICS_PASSWORD }),
+		body: JSON.stringify({ password: env.ADMIN_PASSWORD }),
 	});
 	const cookie = res.headers.get('set-cookie');
 	if (!cookie) return '';
@@ -60,7 +60,7 @@ describe('Auth', () => {
 		const res = await SELF.fetch('https://localhost/api/auth', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ password: env.ANALYTICS_PASSWORD }),
+			body: JSON.stringify({ password: env.ADMIN_PASSWORD }),
 		});
 		expect(res.status).toBe(200);
 		expect(res.headers.get('set-cookie')).toContain('pawprint_session=');

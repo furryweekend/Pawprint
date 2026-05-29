@@ -12,8 +12,8 @@
 	},
 	"cloudflare": {
 		"bindings": {
-			"ANALYTICS_PASSWORD": {
-				"description": "Password to protect your `/analytics` dashboard. Choose something strong — e.g. `openssl rand -hex 16`."
+			"ADMIN_PASSWORD": {
+				"description": "Password to protect your `/admin` and `/analytics` dashboards. Choose something strong."
 			}
 		}
 	},

@@ -19,7 +19,7 @@ An open-source, self-hosted link-in-bio page with click tracking analytics that 
 ## Quick Start
 
 1. Click the **Deploy to Cloudflare** button above
-2. Set your `ANALYTICS_PASSWORD` when prompted
+2. Set your `ADMIN_PASSWORD` when prompted
 3. Edit `config.json` in your new repository to customize your page
 4. Push your changes — your page auto-deploys
 
@@ -172,7 +172,7 @@ npm install
 npx wrangler types
 
 # Create a .dev.vars file with your password
-echo "ANALYTICS_PASSWORD=test" > .dev.vars
+echo "ADMIN_PASSWORD=test" > .dev.vars
 
 # Create local D1 database and run migrations
 npx wrangler d1 migrations apply DB --local
