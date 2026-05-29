@@ -1,11 +1,11 @@
 {
 	"name": "Your Name",
 	"bio": "A short bio about yourself.",
-	"avatar": "https://via.placeholder.com/150",
+	"avatar": "https://placehold.co/150",
 	"header": "",
 
 	"links": [
-		{ "title": "My Website", "url": "https://example.com", "icon": "globe" },
+		{ "title": "My Website", "url": "https://example.com", "icon": "globe", "emphasize": true },
 		{ "title": "My Blog", "url": "https://blog.example.com", "icon": "pencil" },
 		{ "title": "Support Me", "url": "https://ko-fi.com/example", "icon": "heart" }
 	],
@@ -17,11 +17,14 @@
 
 	"theme": {
 		"gradient": "sunset",
-		"textColor": "#ffffff",
+		"textColor": "#000000",
 		"buttonStyle": "filled",
 		"buttonColor": "#6c63ff",
 		"buttonTextColor": "#ffffff",
 		"buttonRadius": "12px",
-		"font": "Inter"
+		"font": "Nunito",
+        "container": "filled",
+        "containerColor": "#ffffff",
+        "containerRadius": "12px"
 	}
 }

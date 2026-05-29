@@ -1,5 +1,5 @@
 import type { PawprintConfig } from './types';
-import { getBackground, getButtonStyles, getFontImport } from './theme';
+import {getBackground, getButtonStyles, getContainerStyles, getFontImport} from './theme';
 import { getSocialIcon, getLinkIcon } from './icons';
 
 function escapeHtml(str: string): string {
@@ -15,6 +15,7 @@ export function renderProfilePage(config: PawprintConfig): string {
 	const theme = config.theme;
 	const bg = getBackground(theme);
 	const buttonCss = getButtonStyles(theme);
+    const containerCss = getContainerStyles(theme);
 	const fontImport = getFontImport(theme);
 	const textColor = theme.textColor ?? '#ffffff';
 	const fontFamily = theme.font ?? 'Inter';
@@ -29,7 +30,7 @@ export function renderProfilePage(config: PawprintConfig): string {
 			const iconHtml = link.icon
 				? `<span class="link-icon">${getLinkIcon(link.icon)}</span>`
 				: '';
-			return `<a href="/click/${i}" class="link-button" rel="noopener noreferrer" target="_blank">${iconHtml}<span>${escapeHtml(link.title)}</span></a>`;
+			return `<a href="/click/${i}" class="link-button ${link.emphasize ? "bounce-button" : ""}" rel="noopener noreferrer" target="_blank">${iconHtml}<span>${escapeHtml(link.title)}</span></a>`;
 		})
 		.join('\n\t\t\t');
 
@@ -59,9 +60,10 @@ export function renderProfilePage(config: PawprintConfig): string {
 			color: ${textColor};
 			min-height: 100vh;
 			display: flex;
-			justify-content: center;
+			justify-content: space-between;
+			flex-direction: column;
 			align-items: flex-start;
-			padding: 2rem 1rem;
+			padding: 1rem 1rem;
 			background: ${bg};
 			${isBackgroundImage ? 'background-size: cover; background-position: center; background-attachment: fixed;' : ''}
 		}
@@ -73,6 +75,8 @@ export function renderProfilePage(config: PawprintConfig): string {
 			flex-direction: column;
 			align-items: center;
 			gap: 1.5rem;
+			margin: auto;
+			${containerCss}
 		}
 
 		.header {
@@ -167,7 +171,7 @@ export function renderProfilePage(config: PawprintConfig): string {
 		}
 
 		.footer {
-			margin-top: 1rem;
+			margin: 0 auto;
 			opacity: 0.4;
 			font-size: 0.75rem;
 		}
@@ -180,22 +184,39 @@ export function renderProfilePage(config: PawprintConfig): string {
 		.footer a:hover {
 			text-decoration: underline;
 		}
+		
+		.bounce-button {
+		    animation: bounce 2s infinite;
+		}
+		
+		@keyframes bounce {
+              0% {
+                transform: scale(1);
+              }
+              10% {
+                transform: scale(1.05);
+              }
+              25% {
+                transform: scale(1);
+              }
+        }
 	</style>
 </head>
 <body>
+    <div></div>
 	<div class="container">
 		${headerHtml}
-		${config.avatar ? `<img class="avatar" src="${escapeHtml(config.avatar)}" alt="${escapeHtml(config.name)}" />` : ''}
-		<h1 class="name">${escapeHtml(config.name)}</h1>
-		<p class="bio">${escapeHtml(config.bio)}</p>
-		<div class="links">
-			${linksHtml}
-		</div>
-		${config.socials.length > 0 ? `<div class="socials">\n\t\t\t${socialsHtml}\n\t\t</div>` : ''}
-		<div class="footer">
-			<a href="https://github.com/furryweekend/Pawprint">Powered by Pawprint</a>
-		</div>
+        ${config.avatar ? `<img class="avatar" src="${escapeHtml(config.avatar)}" alt="${escapeHtml(config.name)}" />` : ''}
+        <h1 class="name">${escapeHtml(config.name)}</h1>
+        <p class="bio">${escapeHtml(config.bio)}</p>
+        <div class="links">
+            ${linksHtml}
+        </div>
+		${config.socials.length > 0 ? `<div class="socials">${socialsHtml}\n\t\t</div>` : ''}
 	</div>
+    <div class="footer">
+        <a href="https://github.com/furryweekend/Pawprint">Powered by Pawprint</a>
+    </div>
 </body>
 </html>`;
 }

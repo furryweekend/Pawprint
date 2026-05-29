@@ -1,6 +1,6 @@
 # 🐾 Pawprint
 
-An open-source, self-hosted link-in-bio page that runs entirely on [Cloudflare Workers](https://workers.cloudflare.com). Think Linktree or Carrd, but free, fast, and fully yours.
+An open-source, self-hosted link-in-bio page with click tracking analytics that runs entirely on [Cloudflare Workers](https://workers.cloudflare.com). Think Linktree but free, fast, and fully yours.
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/furryweekend/Pawprint)
 
@@ -8,8 +8,8 @@ An open-source, self-hosted link-in-bio page that runs entirely on [Cloudflare W
 
 - **Profile page** with avatar, header image, bio, links, and social media icons
 - **10 gradient presets** plus custom colors and background images
-- **3 button styles** — filled, outlined, and soft/glassmorphism
-- **Click analytics** — track total clicks, clicks over time, top referrers, and countries
+- **3 button styles** - filled, outlined, and soft/glassmorphism
+- **Click analytics** - track total clicks, clicks over time, top referrers, and countries
 - **Password-protected analytics dashboard** at `/analytics`
 - **Admin panel** at `/admin` — edit your config live through a web UI (stored in KV)
 - **Configuration-driven** — edit `config.json` and push, or use the admin panel
@@ -44,7 +44,7 @@ KV config takes priority over `config.json`. If you've made changes via the admi
 
   // Links
   "links": [
-    { "title": "My Website", "url": "https://example.com", "icon": "globe" },
+    { "title": "My Website", "url": "https://example.com", "icon": "globe", "emphasize": true },
     { "title": "My Blog", "url": "https://blog.example.com", "icon": "pencil" },
     { "title": "Support Me", "url": "https://ko-fi.com/example", "icon": "heart" }
   ],
@@ -64,7 +64,10 @@ KV config takes priority over `config.json`. If you've made changes via the admi
     "buttonColor": "#6c63ff",
     "buttonTextColor": "#ffffff",
     "buttonRadius": "12px",
-    "font": "Inter"
+    "font": "Inter",
+    "container": "filled",
+    "containerColor": "#ffffff",
+    "containerRadius": "12px"
   }
 }
 ```
@@ -112,6 +115,7 @@ Pick **one** of these in the `theme` object:
 | `outlined` | Transparent with colored border |
 | `soft` | Translucent background with blur effect |
 
+
 ## Admin Panel
 
 Visit `/admin` on your deployed worker to edit your config through a web UI. Uses the same password as the analytics dashboard.
@@ -123,6 +127,29 @@ From the admin panel you can edit:
 - Theme settings (gradient, colors, fonts, button styles)
 
 Changes are saved to Cloudflare KV and take effect immediately — no redeploy needed.
+
+#### Fonts
+
+The font field accepts any [Google Font](https://fonts.google.com/) family name. Browse the catalog, find a font you like, and use its exact name:
+
+```jsonc
+{
+  "theme": {
+    "font": "Inter"
+    // "font": "Playfair+Display"
+    // "font": "JetBrains+Mono"
+    // "font": "Nunito"
+  }
+}
+```
+
+#### Container Styles
+| Style | Description |
+|---|---|
+| `filled` | Solid background |
+| `outlined` | Transparent with colored border |
+| `glass` | Translucent background with blur effect |
+
 
 ## Analytics
 
@@ -190,15 +217,10 @@ npm run deploy
 └── package.json
 ```
 
-## Tech Stack
-
-- [Cloudflare Workers](https://workers.cloudflare.com) — Edge runtime
-- [H3](https://h3.dev) — HTTP framework
-- [Cloudflare KV](https://developers.cloudflare.com/kv/) — Config storage for admin panel
-- [Cloudflare D1](https://developers.cloudflare.com/d1/) — SQLite analytics database
-- [Chart.js](https://www.chartjs.org) — Analytics charts
-- TypeScript
-
 ## License
 
 Apache 2.0 — see [LICENSE](LICENSE)
+
+___
+
+Made by [Furry Weekend Atlanta](https://furryweekend.com)
