@@ -59,9 +59,10 @@ export function renderProfilePage(config: PawprintConfig): string {
 			color: ${textColor};
 			min-height: 100vh;
 			display: flex;
-			justify-content: center;
+			justify-content: space-between;
+			flex-direction: column;
 			align-items: flex-start;
-			padding: 2rem 1rem;
+			padding: 1rem 1rem;
 			background: ${bg};
 			${isBackgroundImage ? 'background-size: cover; background-position: center; background-attachment: fixed;' : ''}
 		}
@@ -73,6 +74,7 @@ export function renderProfilePage(config: PawprintConfig): string {
 			flex-direction: column;
 			align-items: center;
 			gap: 1.5rem;
+			margin: auto;
 		}
 
 		.header {
@@ -167,7 +169,7 @@ export function renderProfilePage(config: PawprintConfig): string {
 		}
 
 		.footer {
-			margin-top: 1rem;
+			margin: 0 auto;
 			opacity: 0.4;
 			font-size: 0.75rem;
 		}
@@ -183,6 +185,7 @@ export function renderProfilePage(config: PawprintConfig): string {
 	</style>
 </head>
 <body>
+    <div></div>
 	<div class="container">
 		${headerHtml}
 		${config.avatar ? `<img class="avatar" src="${escapeHtml(config.avatar)}" alt="${escapeHtml(config.name)}" />` : ''}
@@ -192,10 +195,10 @@ export function renderProfilePage(config: PawprintConfig): string {
 			${linksHtml}
 		</div>
 		${config.socials.length > 0 ? `<div class="socials">\n\t\t\t${socialsHtml}\n\t\t</div>` : ''}
-		<div class="footer">
-			<a href="https://github.com/furryweekend/Pawprint">Powered by Pawprint</a>
-		</div>
 	</div>
+    <div class="footer">
+        <a href="https://github.com/furryweekend/Pawprint">Powered by Pawprint</a>
+    </div>
 </body>
 </html>`;
 }
