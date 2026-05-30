@@ -15,6 +15,12 @@
 		{ "platform": "twitter", "url": "https://twitter.com/example" }
 	],
 
+	"socialPreview": {
+		"title": "",
+		"description": "",
+		"image": ""
+	},
+
 	"theme": {
 		"gradient": "sunset",
 		"textColor": "#000000",

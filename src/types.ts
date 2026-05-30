@@ -10,6 +10,12 @@ export interface SocialItem {
 	url: string;
 }
 
+export interface SocialPreview {
+	title?: string;
+	description?: string;
+	image?: string;
+}
+
 export interface Theme {
 	gradient?: string;
 	color?: string;
@@ -33,4 +39,5 @@ export interface PawprintConfig {
 	links: LinkItem[];
 	socials: SocialItem[];
 	theme: Theme;
+	socialPreview?: SocialPreview;
 }

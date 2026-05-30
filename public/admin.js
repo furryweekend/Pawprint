@@ -92,6 +92,11 @@ function populateForm(config) {
 	$('cfg-avatar').value = config.avatar || '';
 	$('cfg-header').value = config.header || '';
 
+	var share = config.socialPreview || {};
+	$('cfg-share-title').value = share.title || '';
+	$('cfg-share-description').value = share.description || '';
+	$('cfg-share-image').value = share.image || '';
+
 	var linksHtml = (config.links || []).map(createLinkHtml).join('');
 	$('links-container').innerHTML = linksHtml;
 
@@ -136,11 +141,23 @@ function collectConfig() {
 		if (platform && url) socials.push({ platform: platform, url: url });
 	});
 
+	var shareTitle = $('cfg-share-title').value.trim();
+	var shareDescription = $('cfg-share-description').value.trim();
+	var shareImage = $('cfg-share-image').value.trim();
+	var socialPreview;
+	if (shareTitle || shareDescription || shareImage) {
+		socialPreview = {};
+		if (shareTitle) socialPreview.title = shareTitle;
+		if (shareDescription) socialPreview.description = shareDescription;
+		if (shareImage) socialPreview.image = shareImage;
+	}
+
 	return {
 		name: $('cfg-name').value.trim(),
 		bio: $('cfg-bio').value.trim(),
 		avatar: $('cfg-avatar').value.trim(),
 		header: $('cfg-header').value.trim() || undefined,
+		socialPreview: socialPreview,
 		links: links,
 		socials: socials,
 		theme: {
