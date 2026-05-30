@@ -56,11 +56,12 @@
 
 					<div class="section">
 						<h2>Theme</h2>
+						<p class="hint">Background priority: Image > Color > Gradient. Only the highest-priority option set will be used.</p>
 						<div class="row">
 							<div>
-								<label for="cfg-gradient">Gradient Preset</label>
+								<label for="cfg-gradient">Background Gradient</label>
 								<select id="cfg-gradient">
-									<option value="">None (use color below)</option>
+									<option value="">None</option>
 									<option value="sunset">sunset</option>
 									<option value="ocean">ocean</option>
 									<option value="forest">forest</option>
@@ -74,8 +75,11 @@
 								</select>
 							</div>
 							<div>
-								<label for="cfg-color">Custom Color</label>
-								<input type="text" id="cfg-color" placeholder="#1a1a2e" />
+								<div class="checkbox-row">
+									<input type="checkbox" id="cfg-color-enabled" />
+									<label for="cfg-color-enabled">Background Color</label>
+								</div>
+								<input type="color" id="cfg-color" value="#1a1a2e" />
 							</div>
 						</div>
 						<label for="cfg-bgimage">Background Image URL (optional)</label>

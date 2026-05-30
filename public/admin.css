@@ -123,6 +123,12 @@ body {
 	color: #f8fafc;
 }
 
+.hint {
+	color: #64748b;
+	font-size: 0.8rem;
+	margin-bottom: 0.75rem;
+}
+
 label {
 	display: block;
 	font-size: 0.85rem;

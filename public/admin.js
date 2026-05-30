@@ -108,7 +108,8 @@ function populateForm(config) {
 
 	var theme = config.theme || {};
 	$('cfg-gradient').value = theme.gradient || '';
-	$('cfg-color').value = theme.color || '';
+	$('cfg-color-enabled').checked = !!theme.color;
+	$('cfg-color').value = theme.color || '#1a1a2e';
 	$('cfg-bgimage').value = theme.backgroundImage || '';
 	$('cfg-textcolor').value = theme.textColor || '#ffffff';
 	$('cfg-font').value = theme.font || 'Inter';
@@ -154,7 +155,7 @@ function collectConfig() {
 		socials: socials,
 		theme: {
 			gradient: $('cfg-gradient').value || undefined,
-			color: $('cfg-color').value.trim() || undefined,
+			color: $('cfg-color-enabled').checked ? $('cfg-color').value : undefined,
 			backgroundImage: $('cfg-bgimage').value.trim() || undefined,
 			textColor: $('cfg-textcolor').value,
 			font: $('cfg-font').value.trim() || 'Inter',
