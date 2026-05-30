@@ -9,12 +9,16 @@ An open-source, self-hosted link-in-bio page with click tracking analytics that 
 ## Features
 
 - **Profile page** with avatar, header image, bio, links, and social media icons
+- **Font Awesome icons** - use any [Font Awesome Free](https://fontawesome.com/search?o=r&m=free) icon for links and socials
 - **10 gradient presets** plus custom colors and background images
 - **3 button styles** - filled, outlined, and soft/glassmorphism
+- **4 container styles** - none, filled, outlined, and glass
+- **Emphasize links** - add a bounce animation to highlight important links
 - **Click analytics** - track total clicks, clicks over time, top referrers, and countries
 - **Password-protected analytics dashboard** at `/analytics`
-- **Admin panel** at `/admin` - edit your config live through a web UI (stored in KV)
+- **Admin panel** at `/admin` - edit your config live through a web UI with live preview (stored in KV)
 - **Configuration-driven** - edit `config.json` and push, or use the admin panel
+- **Google Fonts support** - use any font from the [Google Fonts](https://fonts.google.com/) catalog
 - **Zero cost** - runs on Cloudflare Workers free tier with D1 for analytics
 - **One-click deploy** - use the button above
 
