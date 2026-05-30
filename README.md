@@ -80,13 +80,11 @@ KV config takes priority over `config.json`. If you've made changes via the admi
 
 ### Icons
 
-Links and socials use [Font Awesome Free](https://fontawesome.com/search?o=r&m=free) icons. You can use **any** icon name from the Font Awesome Free library — just set the `icon` field to the icon name (e.g. `paw`, `rocket`, `code`, `dog`).
+Links and socials use [Font Awesome Free](https://fontawesome.com/search?o=r&m=free) icons. You can use **any** icon name from the Font Awesome Free library — just set the `icon` field to the icon name (e.g. `globe`, `paw`, `rocket`, `code`, `dog`).
 
-Common presets:
-- **Link icons:** `globe`, `pencil`, `heart`, `star`, `link`, `music`, `shop`, `coffee`, `camera`, `book`
-- **Social platforms:** `twitter`, `github`, `instagram`, `youtube`, `discord`, `twitch`, `mastodon`, `bluesky`, `telegram`, `linkedin`, `tiktok`, `email`
+Social platform names (`twitter`, `github`, `instagram`, `youtube`, `discord`, `twitch`, `mastodon`, `bluesky`, `telegram`, `linkedin`, `tiktok`, `email`) automatically use their brand icons and can be used as link icons too.
 
-Social platform names can also be used as link icons. Browse all available icons at [fontawesome.com/search](https://fontawesome.com/search?o=r&m=free).
+Browse all available icons at [fontawesome.com/search](https://fontawesome.com/search?o=r&m=free).
 
 ### Theme Options
 

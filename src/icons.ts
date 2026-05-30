@@ -13,19 +13,6 @@ const socialIcons: Record<string, string> = {
 	email: '<i class="fa-solid fa-envelope"></i>',
 };
 
-const linkIcons: Record<string, string> = {
-	globe: '<i class="fa-solid fa-globe"></i>',
-	pencil: '<i class="fa-solid fa-pencil"></i>',
-	heart: '<i class="fa-solid fa-heart"></i>',
-	star: '<i class="fa-solid fa-star"></i>',
-	link: '<i class="fa-solid fa-link"></i>',
-	music: '<i class="fa-solid fa-music"></i>',
-	shop: '<i class="fa-solid fa-shop"></i>',
-	coffee: '<i class="fa-solid fa-mug-hot"></i>',
-	camera: '<i class="fa-solid fa-camera"></i>',
-	book: '<i class="fa-solid fa-book"></i>',
-};
-
 function faIcon(name: string): string {
 	return `<i class="fa-solid fa-${name}"></i>`;
 }
@@ -35,5 +22,5 @@ export function getSocialIcon(platform: string): string {
 }
 
 export function getLinkIcon(icon: string): string {
-	return linkIcons[icon] ?? socialIcons[icon.toLowerCase()] ?? faIcon(icon.toLowerCase());
+	return socialIcons[icon.toLowerCase()] ?? faIcon(icon.toLowerCase());
 }

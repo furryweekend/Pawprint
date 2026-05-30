@@ -1,5 +1,5 @@
 import type { PawprintConfig } from './types';
-import { getSocialIcon, getLinkIcon } from './icons';
+import { getSocialIcon } from './icons';
 
 function socialIconsMap(): Record<string, string> {
 	const platforms = ['twitter', 'github', 'instagram', 'youtube', 'discord', 'twitch', 'mastodon', 'bluesky', 'telegram', 'linkedin', 'tiktok', 'email'];
@@ -8,14 +8,6 @@ function socialIconsMap(): Record<string, string> {
 	return map;
 }
 
-function linkIconsMap(): Record<string, string> {
-	const icons = ['globe', 'pencil', 'heart', 'star', 'link', 'music', 'shop', 'coffee', 'camera', 'book'];
-	const platforms = ['twitter', 'github', 'instagram', 'youtube', 'discord', 'twitch', 'mastodon', 'bluesky', 'telegram', 'linkedin', 'tiktok', 'email'];
-	const map: Record<string, string> = {};
-	for (const i of icons) map[i] = getLinkIcon(i);
-	for (const p of platforms) map[p] = getLinkIcon(p);
-	return map;
-}
 
 function escapeHtml(str: string): string {
 	return str
@@ -336,7 +328,6 @@ export function renderAdminPage(config: PawprintConfig | null): string {
 
 		const SOCIAL_ICONS = ${JSON.stringify(socialIconsMap()).replace(/<\//g, '<\\/')};
 
-		const LINK_ICONS = ${JSON.stringify(linkIconsMap()).replace(/<\//g, '<\\/')};
 
 		function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -381,7 +372,7 @@ export function renderAdminPage(config: PawprintConfig | null): string {
 			const headerHtml = cfg.header ? '<div class="header"><img src="' + esc(cfg.header) + '" alt="Header" /><' + '/div>' : '';
 
 			const linksHtml = (cfg.links || []).map(function(link, i) {
-				const iconHtml = link.icon ? (LINK_ICONS[link.icon] || '<i class="fa-solid fa-' + link.icon.toLowerCase() + '"><' + '/i>') : '';
+				const iconHtml = link.icon ? (SOCIAL_ICONS[link.icon.toLowerCase()] || '<i class="fa-solid fa-' + link.icon.toLowerCase() + '"><' + '/i>') : '';
 				const iconSvg = iconHtml ? '<span class="link-icon">' + iconHtml + '<' + '/span>' : '';
 				const emphClass = link.emphasize ? ' bounce-button' : '';
 				return '<a href="#" class="link-button' + emphClass + '" onclick="return false">' + iconSvg + '<span>' + esc(link.title) + '<' + '/span><' + '/a>';
