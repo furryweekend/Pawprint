@@ -46,6 +46,7 @@ export function renderProfilePage(config: PawprintConfig): string {
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>${escapeHtml(config.name)}</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<meta name="description" content="${escapeHtml(config.bio)}" />
 	<meta property="og:title" content="${escapeHtml(config.name)}" />
 	<meta property="og:description" content="${escapeHtml(config.bio)}" />
@@ -132,16 +133,10 @@ export function renderProfilePage(config: PawprintConfig): string {
 		}
 
 		.link-icon {
-			width: 20px;
-			height: 20px;
 			flex-shrink: 0;
 			display: flex;
 			align-items: center;
-		}
-
-		.link-icon svg {
-			width: 100%;
-			height: 100%;
+			font-size: 1.1rem;
 		}
 
 		.socials {
@@ -153,21 +148,16 @@ export function renderProfilePage(config: PawprintConfig): string {
 		}
 
 		.social-icon {
-			width: 28px;
-			height: 28px;
 			color: ${textColor};
 			opacity: 0.7;
 			transition: opacity 0.15s ease, transform 0.15s ease;
+			font-size: 1.5rem;
+			text-decoration: none;
 		}
 
 		.social-icon:hover {
 			opacity: 1;
 			transform: scale(1.15);
-		}
-
-		.social-icon svg {
-			width: 100%;
-			height: 100%;
 		}
 
 		.footer {
