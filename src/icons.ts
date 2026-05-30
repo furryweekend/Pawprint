@@ -26,10 +26,14 @@ const linkIcons: Record<string, string> = {
 	book: '<i class="fa-solid fa-book"></i>',
 };
 
+function faIcon(name: string): string {
+	return `<i class="fa-solid fa-${name}"></i>`;
+}
+
 export function getSocialIcon(platform: string): string {
-	return socialIcons[platform.toLowerCase()] ?? '';
+	return socialIcons[platform.toLowerCase()] ?? faIcon(platform.toLowerCase());
 }
 
 export function getLinkIcon(icon: string): string {
-	return linkIcons[icon] ?? socialIcons[icon.toLowerCase()] ?? linkIcons.link ?? '';
+	return linkIcons[icon] ?? socialIcons[icon.toLowerCase()] ?? faIcon(icon.toLowerCase());
 }

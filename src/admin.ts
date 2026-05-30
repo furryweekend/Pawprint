@@ -381,13 +381,14 @@ export function renderAdminPage(config: PawprintConfig | null): string {
 			const headerHtml = cfg.header ? '<div class="header"><img src="' + esc(cfg.header) + '" alt="Header" /><' + '/div>' : '';
 
 			const linksHtml = (cfg.links || []).map(function(link, i) {
-				const iconSvg = link.icon && LINK_ICONS[link.icon] ? '<span class="link-icon">' + LINK_ICONS[link.icon] + '<' + '/span>' : '';
+				const iconHtml = link.icon ? (LINK_ICONS[link.icon] || '<i class="fa-solid fa-' + link.icon.toLowerCase() + '"><' + '/i>') : '';
+				const iconSvg = iconHtml ? '<span class="link-icon">' + iconHtml + '<' + '/span>' : '';
 				const emphClass = link.emphasize ? ' bounce-button' : '';
 				return '<a href="#" class="link-button' + emphClass + '" onclick="return false">' + iconSvg + '<span>' + esc(link.title) + '<' + '/span><' + '/a>';
 			}).join('');
 
 			const socialsHtml = (cfg.socials || []).map(function(s) {
-				const icon = SOCIAL_ICONS[s.platform] || '';
+				const icon = SOCIAL_ICONS[s.platform] || '<i class="fa-solid fa-' + s.platform.toLowerCase() + '"><' + '/i>';
 				return '<a href="#" class="social-icon" onclick="return false" title="' + esc(s.platform) + '">' + icon + '<' + '/a>';
 			}).join('');
 
