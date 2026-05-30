@@ -62,6 +62,14 @@ KV config takes priority over `config.json`. If you've made changes via the admi
     { "platform": "bluesky", "url": "https://bsky.app/profile/example" }
   ],
 
+  // Link preview (OpenGraph) shown when your page is shared
+  // Every field is optional and falls back to the profile fields above
+  "socialPreview": {
+    "title": "Your Name",                          // falls back to "name"
+    "description": "A short bio about yourself.",   // falls back to "bio"
+    "image": "https://example.com/share-card.png"   // falls back to "avatar"
+  },
+
   // Theme
   "theme": {
     "gradient": "sunset",
@@ -150,6 +158,7 @@ Visit `/admin` on your deployed worker to edit your config through a web UI. You
 
 From the admin panel you can edit:
 - Profile info (name, bio, avatar, header)
+- Social preview / share card (title, description, image)
 - Links (add, remove, reorder)
 - Social media accounts
 - Theme settings (gradient, colors, fonts, button styles)

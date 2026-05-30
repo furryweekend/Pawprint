@@ -96,6 +96,29 @@ function buildStyles(config: PawprintConfig): string {
 		}`;
 }
 
+function buildMetaTags(config: PawprintConfig): string {
+	const sp = config.socialPreview ?? {};
+	const title = sp.title || config.name;
+	const description = sp.description || config.bio;
+	const image = sp.image || config.avatar;
+
+	const tags = [
+		`<meta property="og:type" content="website" />`,
+		`<meta property="og:title" content="${esc(title)}" />`,
+		`<meta property="og:description" content="${esc(description)}" />`,
+		`<meta name="twitter:card" content="summary_large_image" />`,
+		`<meta name="twitter:title" content="${esc(title)}" />`,
+		`<meta name="twitter:description" content="${esc(description)}" />`,
+	];
+
+	if (image) {
+		tags.push(`<meta property="og:image" content="${esc(image)}" />`);
+		tags.push(`<meta name="twitter:image" content="${esc(image)}" />`);
+	}
+
+	return tags.join('\n\t');
+}
+
 function buildLinksHtml(config: PawprintConfig): string {
 	return config.links
 		.map((link, i) => {
@@ -135,9 +158,7 @@ export function renderProfilePage(config: PawprintConfig): string {
 	<title>${esc(config.name)}</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<meta name="description" content="${esc(config.bio)}" />
-	<meta property="og:title" content="${esc(config.name)}" />
-	<meta property="og:description" content="${esc(config.bio)}" />
-	${config.avatar ? `<meta property="og:image" content="${esc(config.avatar)}" />` : ''}
+	${buildMetaTags(config)}
 	<style>${buildStyles(config)}</style>
 </head>
 <body>

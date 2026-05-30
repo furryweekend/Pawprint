@@ -27,6 +27,44 @@ describe('Profile page', () => {
 		expect(html).toContain('A short bio about yourself.');
 		expect(html).toContain('/click/0');
 	});
+
+	it('emits social preview meta tags falling back to profile fields', async () => {
+		const res = await SELF.fetch('https://localhost/');
+		const html = await res.text();
+		expect(html).toContain('<meta name="twitter:card" content="summary_large_image" />');
+		expect(html).toContain('<meta property="og:title" content="Your Name" />');
+		expect(html).toContain('<meta property="og:image" content="https://placehold.co/150" />');
+	});
+
+	it('uses socialPreview overrides when configured', async () => {
+		const cookie = await getAuthCookie();
+		const newConfig = {
+			name: 'Profile Name',
+			bio: 'Profile bio',
+			avatar: 'https://example.com/avatar.jpg',
+			socialPreview: {
+				title: 'Share Title',
+				description: 'Share description',
+				image: 'https://example.com/share-card.png',
+			},
+			links: [{ title: 'Link', url: 'https://example.com' }],
+			socials: [],
+			theme: { gradient: 'sunset' },
+		};
+
+		await SELF.fetch('https://localhost/api/config', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json', Cookie: cookie },
+			body: JSON.stringify(newConfig),
+		});
+
+		const res = await SELF.fetch('https://localhost/');
+		const html = await res.text();
+		expect(html).toContain('<meta property="og:title" content="Share Title" />');
+		expect(html).toContain('<meta property="og:description" content="Share description" />');
+		expect(html).toContain('<meta property="og:image" content="https://example.com/share-card.png" />');
+		expect(html).toContain('<meta name="twitter:image" content="https://example.com/share-card.png" />');
+	});
 });
 
 describe('Click tracking', () => {
