@@ -10,8 +10,10 @@ function socialIconsMap(): Record<string, string> {
 
 function linkIconsMap(): Record<string, string> {
 	const icons = ['globe', 'pencil', 'heart', 'star', 'link', 'music', 'shop', 'coffee', 'camera', 'book'];
+	const platforms = ['twitter', 'github', 'instagram', 'youtube', 'discord', 'twitch', 'mastodon', 'bluesky', 'telegram', 'linkedin', 'tiktok', 'email'];
 	const map: Record<string, string> = {};
 	for (const i of icons) map[i] = getLinkIcon(i);
+	for (const p of platforms) map[p] = getLinkIcon(p);
 	return map;
 }
 
@@ -187,7 +189,7 @@ export function renderAdminPage(config: PawprintConfig | null): string {
 								</div>
 								<div>
 									<label>Icon (optional)</label>
-									<input type="text" class="link-icon" value="${escapeAttr(link.icon ?? '')}" placeholder="globe, heart, star..." />
+									<input type="text" class="link-icon" value="${escapeAttr(link.icon ?? '')}" placeholder="globe, heart, github, discord..." />
 								</div>
 							</div>
 							<div class="checkbox-row">
@@ -534,7 +536,7 @@ export function renderAdminPage(config: PawprintConfig | null): string {
 					</div>
 					<div>
 						<label>Icon (optional)</label>
-						<input type="text" class="link-icon" value="" placeholder="globe, heart, star..." />
+						<input type="text" class="link-icon" value="" placeholder="globe, heart, github, discord..." />
 					</div>
 				</div>
 				<div class="checkbox-row">

@@ -31,5 +31,5 @@ export function getSocialIcon(platform: string): string {
 }
 
 export function getLinkIcon(icon: string): string {
-	return linkIcons[icon] ?? linkIcons.link ?? '';
+	return linkIcons[icon] ?? socialIcons[icon.toLowerCase()] ?? linkIcons.link ?? '';
 }
