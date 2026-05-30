@@ -132,6 +132,13 @@ app.post('/api/config', async (event) => {
 	return { ok: true };
 });
 
+app.post('/api/preview', async (event) => {
+	const config = (await event.req.json()) as PawprintConfig;
+	return new Response(renderProfilePage(config), {
+		headers: { 'Content-Type': 'text/html; charset=utf-8' },
+	});
+});
+
 app.get('/api/analytics/:index', async (event) => {
 	const env = getEnv(event);
 	const config = await getConfig(env.CONFIG_KV);
