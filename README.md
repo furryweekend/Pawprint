@@ -65,9 +65,9 @@ KV config takes priority over `config.json`. If you've made changes via the admi
   // Link preview (OpenGraph) shown when your page is shared
   // Every field is optional and falls back to the profile fields above
   "socialPreview": {
-    "title": "Your Name",                          // falls back to "name"
+    "title": "Your Name",                           // falls back to "name"
     "description": "A short bio about yourself.",   // falls back to "bio"
-    "image": "https://example.com/share-card.png"   // falls back to "avatar"
+    "image": "https://example.com/share-card.png"   // omit to auto generate a card from profile
   },
 
   // Theme
