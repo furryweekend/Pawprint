@@ -399,9 +399,9 @@ export function renderAdminPage(config: PawprintConfig | null): string {
 				'.name{font-size:1.5rem;font-weight:700;text-align:center}.bio{font-size:0.95rem;opacity:0.85;text-align:center;line-height:1.5;max-width:360px}',
 				'.links{width:100%;display:flex;flex-direction:column;gap:0.75rem}',
 				'.link-button{' + btnCss + '}.link-button:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.2)}',
-				'.link-icon{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center}.link-icon svg{width:100%;height:100%}',
+				'.link-icon{flex-shrink:0;display:flex;align-items:center;font-size:1.1rem}',
 				'.socials{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:0.5rem}',
-				'.social-icon{width:28px;height:28px;color:' + textColor + ';opacity:0.7;transition:opacity .15s ease,transform .15s ease}.social-icon:hover{opacity:1;transform:scale(1.15)}.social-icon svg{width:100%;height:100%}',
+				'.social-icon{color:' + textColor + ';opacity:0.7;transition:opacity .15s ease,transform .15s ease;font-size:1.5rem;text-decoration:none}.social-icon:hover{opacity:1;transform:scale(1.15)}',
 				'.footer{margin:0 auto;opacity:0.4;font-size:0.75rem}.footer a{color:inherit;text-decoration:none}',
 				'.bounce-button{animation:bounce 2s infinite}@keyframes bounce{0%{transform:scale(1)}10%{transform:scale(1.05)}25%{transform:scale(1)}}',
 			].join('');
@@ -415,7 +415,7 @@ export function renderAdminPage(config: PawprintConfig | null): string {
 				socialsHtml ? '<div class="socials">' + socialsHtml + '<' + '/div>' : '',
 			].join('');
 
-			return '<!DOCTYPE html><html><head><style>' + css + '<' + '/style><' + '/head><body><div><' + '/div><div class="container">'
+			return '<!DOCTYPE html><html><head><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" /><style>' + css + '<' + '/style><' + '/head><body><div><' + '/div><div class="container">'
 				+ body
 				+ '<' + '/div><div class="footer"><a href="https://github.com/furryweekend/Pawprint">Powered by Pawprint<' + '/a><' + '/div><' + '/body><' + '/html>';
 		}
