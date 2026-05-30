@@ -2,8 +2,6 @@ var PLATFORMS = ['twitter', 'github', 'instagram', 'youtube', 'discord', 'twitch
 
 var previewDebounce = null;
 
-/* ── Utilities ── */
-
 function esc(s) {
 	return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
@@ -17,8 +15,6 @@ function showToast(msg, isError) {
 	el.style.display = 'block';
 	setTimeout(function() { el.style.display = 'none'; }, 3000);
 }
-
-/* ── Auth ── */
 
 async function login() {
 	var pw = $('password').value;
@@ -56,8 +52,6 @@ async function loadAdmin() {
 	} catch (e) { /* stay on login */ }
 }
 
-/* ── Form: dynamic elements ── */
-
 function createLinkHtml(link, index) {
 	return '<div class="link-group" data-index="' + index + '">'
 		+ '<button type="button" class="remove-btn" onclick="removeLink(this)">Remove</button>'
@@ -92,8 +86,6 @@ function createSocialHtml(social, index) {
 		+ '</div></div></div>';
 }
 
-/* ── Form: populate from config ── */
-
 function populateForm(config) {
 	$('cfg-name').value = config.name || '';
 	$('cfg-bio').value = config.bio || '';
@@ -121,8 +113,6 @@ function populateForm(config) {
 	$('cfg-containerradius').value = theme.containerRadius || '12px';
 	$('cfg-containercolor').value = theme.containerColor || '#ffffff';
 }
-
-/* ── Form: collect into config object ── */
 
 function collectConfig() {
 	var links = [];
@@ -170,8 +160,6 @@ function collectConfig() {
 	};
 }
 
-/* ── Preview ── */
-
 async function updatePreview() {
 	var cfg = collectConfig();
 	try {
@@ -190,8 +178,6 @@ function schedulePreviewUpdate() {
 	clearTimeout(previewDebounce);
 	previewDebounce = setTimeout(updatePreview, 300);
 }
-
-/* ── Save / Reset ── */
 
 async function saveConfig() {
 	var btn = $('save-btn');
@@ -219,8 +205,6 @@ function resetConfig() {
 	location.reload();
 }
 
-/* ── Add / Remove ── */
-
 function addLink() {
 	var container = $('links-container');
 	var idx = container.querySelectorAll('.link-group').length;
@@ -247,8 +231,6 @@ function removeSocial(btn) {
 	schedulePreviewUpdate();
 }
 
-/* ── Event listeners ── */
-
 $('login-btn').addEventListener('click', login);
 $('password').addEventListener('keydown', function(e) { if (e.key === 'Enter') login(); });
 $('save-btn').addEventListener('click', saveConfig);
@@ -258,5 +240,4 @@ $('add-social-btn').addEventListener('click', addSocial);
 $('admin-form').addEventListener('input', schedulePreviewUpdate);
 $('admin-form').addEventListener('change', schedulePreviewUpdate);
 
-/* ── Init ── */
 loadAdmin();

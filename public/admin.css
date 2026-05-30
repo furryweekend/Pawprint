@@ -7,7 +7,6 @@ body {
 	min-height: 100vh;
 }
 
-/* Login */
 .login-overlay {
 	display: flex;
 	justify-content: center;
@@ -61,7 +60,6 @@ body {
 	display: none;
 }
 
-/* Admin layout */
 #admin-panel {
 	display: none;
 	min-height: 100vh;
@@ -109,7 +107,6 @@ body {
 
 .nav a:hover { text-decoration: underline; }
 
-/* Form sections */
 .section {
 	background: #1e293b;
 	border-radius: 12px;
@@ -191,7 +188,6 @@ select { cursor: pointer; }
 	cursor: pointer;
 }
 
-/* Link & social groups */
 .link-group, .social-group {
 	background: #162032;
 	border-radius: 8px;
@@ -234,7 +230,6 @@ select { cursor: pointer; }
 	gap: 1rem;
 }
 
-/* Actions */
 .actions {
 	display: flex;
 	gap: 1rem;
@@ -267,7 +262,6 @@ select { cursor: pointer; }
 
 .reset-btn:hover { background: #64748b; }
 
-/* Toast */
 .toast {
 	position: fixed;
 	bottom: 2rem;
@@ -283,7 +277,6 @@ select { cursor: pointer; }
 
 .toast.error { background: #dc2626; }
 
-/* Preview panel */
 .preview-panel {
 	width: 420px;
 	flex-shrink: 0;
