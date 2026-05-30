@@ -230,3 +230,9 @@ Apache 2.0 — see [LICENSE](LICENSE)
 ___
 
 Made by [Furry Weekend Atlanta](https://furryweekend.com)
+
+## Notice
+
+This worker was largely written with the help of [devin.ai](https://devin.ai). As part of my (Gomi's) day job I have been having to evaluate and use AI products, Devin being one of them. This project started as a way to better test its ability to create Cloudflare Workers and handle larger UX tasks.
+
+All code that devin wrote was reviewed by myself.
