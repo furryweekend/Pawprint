@@ -2,7 +2,6 @@ import { H3, H3Event } from 'h3/cloudflare';
 import { renderProfilePage } from './render';
 import { createSession, verifySession, getSessionCookie, parseSessionCookie } from './auth';
 import { getConfig, saveConfig } from './config';
-import { renderAdminPage } from './admin';
 import type { PawprintConfig } from './types';
 
 const app = new H3();
@@ -12,7 +11,6 @@ function getEnv(event: H3Event): Env {
 	return rt?.cloudflare?.env as Env;
 }
 
-// Auth middleware for API routes (skip /api/auth)
 async function requireAuth(event: H3Event, next: () => unknown) {
 	const path = new URL(event.req.url).pathname;
 	if (path === '/api/auth') return next();
@@ -29,7 +27,6 @@ async function requireAuth(event: H3Event, next: () => unknown) {
 
 app.use('/api/*', requireAuth);
 
-// Profile page
 app.get('/', async (event) => {
 	const env = getEnv(event);
 	const config = await getConfig(env.CONFIG_KV);
@@ -38,24 +35,6 @@ app.get('/', async (event) => {
 	});
 });
 
-// Admin page
-app.get('/admin', async (event) => {
-	const env = getEnv(event);
-	const cookie = parseSessionCookie(event.req.headers.get('cookie'));
-
-	if (!cookie || !(await verifySession(cookie, env.ADMIN_PASSWORD))) {
-		return new Response(renderAdminPage(null), {
-			headers: { 'Content-Type': 'text/html; charset=utf-8' },
-		});
-	}
-
-	const config = await getConfig(env.CONFIG_KV);
-	return new Response(renderAdminPage(config), {
-		headers: { 'Content-Type': 'text/html; charset=utf-8' },
-	});
-});
-
-// Click redirect + tracking
 app.get('/click/:index', async (event) => {
 	const env = getEnv(event);
 	const config = await getConfig(env.CONFIG_KV);
@@ -95,7 +74,6 @@ app.get('/click/:index', async (event) => {
 	});
 });
 
-// Auth endpoint
 app.post('/api/auth', async (event) => {
 	const env = getEnv(event);
 	const body = (await event.req.json()) as { password?: string };
@@ -114,7 +92,6 @@ app.post('/api/auth', async (event) => {
 	});
 });
 
-// Analytics: all links summary
 app.get('/api/analytics', async (event) => {
 	const env = getEnv(event);
 	const config = await getConfig(env.CONFIG_KV);
@@ -142,14 +119,12 @@ app.get('/api/analytics', async (event) => {
 	};
 });
 
-// Config API: get current config
 app.get('/api/config', async (event) => {
 	const env = getEnv(event);
 	const config = await getConfig(env.CONFIG_KV);
 	return config;
 });
 
-// Config API: save config
 app.post('/api/config', async (event) => {
 	const env = getEnv(event);
 	const body = (await event.req.json()) as PawprintConfig;
@@ -157,7 +132,13 @@ app.post('/api/config', async (event) => {
 	return { ok: true };
 });
 
-// Analytics: per-link detail
+app.post('/api/preview', async (event) => {
+	const config = (await event.req.json()) as PawprintConfig;
+	return new Response(renderProfilePage(config), {
+		headers: { 'Content-Type': 'text/html; charset=utf-8' },
+	});
+});
+
 app.get('/api/analytics/:index', async (event) => {
 	const env = getEnv(event);
 	const config = await getConfig(env.CONFIG_KV);

@@ -81,22 +81,11 @@ describe('Auth', () => {
 });
 
 describe('Admin', () => {
-	it('shows login page when unauthenticated', async () => {
+	it('serves admin page as static asset', async () => {
 		const res = await SELF.fetch('https://localhost/admin');
 		expect(res.status).toBe(200);
 		const html = await res.text();
 		expect(html).toContain('Pawprint Admin');
-		expect(html).toContain('password');
-		expect(html).not.toContain('cfg-name');
-	});
-
-	it('shows admin form when authenticated', async () => {
-		const cookie = await getAuthCookie();
-		const res = await SELF.fetch('https://localhost/admin', {
-			headers: { Cookie: cookie },
-		});
-		expect(res.status).toBe(200);
-		const html = await res.text();
 		expect(html).toContain('cfg-name');
 		expect(html).toContain('Save Changes');
 	});
