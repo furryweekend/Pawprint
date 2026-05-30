@@ -149,6 +149,20 @@ input[type="text"], input[type="url"], input[type="color"], select {
 	font-size: 0.9rem;
 }
 
+.color-with-toggle {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.color-with-toggle input[type="checkbox"] {
+	flex-shrink: 0;
+}
+
+.color-with-toggle input[type="color"] {
+	flex: 1;
+}
+
 input[type="color"] {
 	height: 40px;
 	padding: 4px;
