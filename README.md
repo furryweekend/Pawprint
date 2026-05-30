@@ -129,8 +129,8 @@ The font field accepts any [Google Font](https://fonts.google.com/) family name.
 {
   "theme": {
     "font": "Inter"
-    // "font": "Playfair+Display"
-    // "font": "JetBrains+Mono"
+    // "font": "Playfair Display"
+    // "font": "JetBrains Mono"
     // "font": "Nunito"
   }
 }

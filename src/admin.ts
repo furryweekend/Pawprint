@@ -365,7 +365,7 @@ export function renderAdminPage(config: PawprintConfig | null): string {
 			const btnCss = getPreviewButtonCss(theme);
 			const contCss = getPreviewContainerCss(theme);
 			const textColor = theme.textColor || '#ffffff';
-			const fontFamily = theme.font || 'Inter';
+			const fontFamily = (theme.font || 'Inter').replace(/\+/g, ' ');
 			const fontImport = "@import url('https://fonts.googleapis.com/css2?family=" + encodeURIComponent(fontFamily) + ":wght@400;500;600;700&display=swap');";
 			const isBgImage = !!theme.backgroundImage;
 
