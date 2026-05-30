@@ -1,8 +1,8 @@
 import type { PawprintConfig } from './types';
-import {getBackground, getButtonStyles, getContainerStyles, getFontImport} from './theme';
+import { getBackground, getButtonStyles, getContainerStyles, getFontImport } from './theme';
 import { getSocialIcon, getLinkIcon } from './icons';
 
-function escapeHtml(str: string): string {
+function esc(str: string): string {
 	return str
 		.replace(/&/g, '&amp;')
 		.replace(/</g, '&lt;')
@@ -11,48 +11,15 @@ function escapeHtml(str: string): string {
 		.replace(/'/g, '&#039;');
 }
 
-export function renderProfilePage(config: PawprintConfig): string {
+function buildStyles(config: PawprintConfig): string {
 	const theme = config.theme;
-	const bg = getBackground(theme);
-	const buttonCss = getButtonStyles(theme);
-    const containerCss = getContainerStyles(theme);
-	const fontImport = getFontImport(theme);
 	const textColor = theme.textColor ?? '#ffffff';
 	const fontFamily = (theme.font ?? 'Inter').replace(/\+/g, ' ');
+	const bg = getBackground(theme);
 	const isBackgroundImage = !!theme.backgroundImage;
 
-	const headerHtml = config.header
-		? `<div class="header"><img src="${escapeHtml(config.header)}" alt="Header" /></div>`
-		: '';
-
-	const linksHtml = config.links
-		.map((link, i) => {
-			const iconHtml = link.icon
-				? `<span class="link-icon">${getLinkIcon(link.icon)}</span>`
-				: '';
-			return `<a href="/click/${i}" class="link-button ${link.emphasize ? "bounce-button" : ""}" rel="noopener noreferrer" target="_blank">${iconHtml}<span>${escapeHtml(link.title)}</span></a>`;
-		})
-		.join('\n\t\t\t');
-
-	const socialsHtml = config.socials
-		.map((social) => {
-			return `<a href="${escapeHtml(social.url)}" class="social-icon" rel="noopener noreferrer" target="_blank" title="${escapeHtml(social.platform)}">${getSocialIcon(social.platform)}</a>`;
-		})
-		.join('\n\t\t\t');
-
-	return `<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>${escapeHtml(config.name)}</title>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<meta name="description" content="${escapeHtml(config.bio)}" />
-	<meta property="og:title" content="${escapeHtml(config.name)}" />
-	<meta property="og:description" content="${escapeHtml(config.bio)}" />
-	${config.avatar ? `<meta property="og:image" content="${escapeHtml(config.avatar)}" />` : ''}
-	<style>
-		${fontImport}
+	return `
+		${getFontImport(theme)}
 
 		*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -77,21 +44,11 @@ export function renderProfilePage(config: PawprintConfig): string {
 			align-items: center;
 			gap: 1.5rem;
 			margin: auto;
-			${containerCss}
+			${getContainerStyles(theme)}
 		}
 
-		.header {
-			width: 100%;
-			border-radius: 16px;
-			overflow: hidden;
-			max-height: 200px;
-		}
-
-		.header img {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-		}
+		.header { width: 100%; border-radius: 16px; overflow: hidden; max-height: 200px; }
+		.header img { width: 100%; height: 100%; object-fit: cover; }
 
 		.avatar {
 			width: 120px;
@@ -102,11 +59,7 @@ export function renderProfilePage(config: PawprintConfig): string {
 			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 		}
 
-		.name {
-			font-size: 1.5rem;
-			font-weight: 700;
-			text-align: center;
-		}
+		.name { font-size: 1.5rem; font-weight: 700; text-align: center; }
 
 		.bio {
 			font-size: 0.95rem;
@@ -116,37 +69,12 @@ export function renderProfilePage(config: PawprintConfig): string {
 			max-width: 360px;
 		}
 
-		.links {
-			width: 100%;
-			display: flex;
-			flex-direction: column;
-			gap: 0.75rem;
-		}
+		.links { width: 100%; display: flex; flex-direction: column; gap: 0.75rem; }
+		.link-button { ${getButtonStyles(theme)} }
+		.link-button:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); }
+		.link-icon { flex-shrink: 0; display: flex; align-items: center; font-size: 1.1rem; }
 
-		.link-button {
-			${buttonCss}
-		}
-
-		.link-button:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-		}
-
-		.link-icon {
-			flex-shrink: 0;
-			display: flex;
-			align-items: center;
-			font-size: 1.1rem;
-		}
-
-		.socials {
-			display: flex;
-			gap: 1rem;
-			flex-wrap: wrap;
-			justify-content: center;
-			margin-top: 0.5rem;
-		}
-
+		.socials { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem; }
 		.social-icon {
 			color: ${textColor};
 			opacity: 0.7;
@@ -154,59 +82,79 @@ export function renderProfilePage(config: PawprintConfig): string {
 			font-size: 1.5rem;
 			text-decoration: none;
 		}
+		.social-icon:hover { opacity: 1; transform: scale(1.15); }
 
-		.social-icon:hover {
-			opacity: 1;
-			transform: scale(1.15);
-		}
+		.footer { margin: 0 auto; opacity: 0.4; font-size: 0.75rem; }
+		.footer a { color: inherit; text-decoration: none; }
+		.footer a:hover { text-decoration: underline; }
 
-		.footer {
-			margin: 0 auto;
-			opacity: 0.4;
-			font-size: 0.75rem;
-		}
-
-		.footer a {
-			color: inherit;
-			text-decoration: none;
-		}
-
-		.footer a:hover {
-			text-decoration: underline;
-		}
-		
-		.bounce-button {
-		    animation: bounce 2s infinite;
-		}
-		
+		.bounce-button { animation: bounce 2s infinite; }
 		@keyframes bounce {
-              0% {
-                transform: scale(1);
-              }
-              10% {
-                transform: scale(1.05);
-              }
-              25% {
-                transform: scale(1);
-              }
-        }
-	</style>
+			0% { transform: scale(1); }
+			10% { transform: scale(1.05); }
+			25% { transform: scale(1); }
+		}`;
+}
+
+function buildLinksHtml(config: PawprintConfig): string {
+	return config.links
+		.map((link, i) => {
+			const icon = link.icon ? `<span class="link-icon">${getLinkIcon(link.icon)}</span>` : '';
+			const emphClass = link.emphasize ? ' bounce-button' : '';
+			return `<a href="/click/${i}" class="link-button${emphClass}" rel="noopener noreferrer" target="_blank">${icon}<span>${esc(link.title)}</span></a>`;
+		})
+		.join('\n\t\t\t');
+}
+
+function buildSocialsHtml(config: PawprintConfig): string {
+	return config.socials
+		.map((social) => {
+			return `<a href="${esc(social.url)}" class="social-icon" rel="noopener noreferrer" target="_blank" title="${esc(social.platform)}">${getSocialIcon(social.platform)}</a>`;
+		})
+		.join('\n\t\t\t');
+}
+
+export function renderProfilePage(config: PawprintConfig): string {
+	const headerHtml = config.header
+		? `<div class="header"><img src="${esc(config.header)}" alt="Header" /></div>`
+		: '';
+
+	const avatarHtml = config.avatar
+		? `<img class="avatar" src="${esc(config.avatar)}" alt="${esc(config.name)}" />`
+		: '';
+
+	const socialsSection = config.socials.length > 0
+		? `<div class="socials">${buildSocialsHtml(config)}</div>`
+		: '';
+
+	return `<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>${esc(config.name)}</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<meta name="description" content="${esc(config.bio)}" />
+	<meta property="og:title" content="${esc(config.name)}" />
+	<meta property="og:description" content="${esc(config.bio)}" />
+	${config.avatar ? `<meta property="og:image" content="${esc(config.avatar)}" />` : ''}
+	<style>${buildStyles(config)}</style>
 </head>
 <body>
-    <div></div>
+	<div></div>
 	<div class="container">
 		${headerHtml}
-        ${config.avatar ? `<img class="avatar" src="${escapeHtml(config.avatar)}" alt="${escapeHtml(config.name)}" />` : ''}
-        <h1 class="name">${escapeHtml(config.name)}</h1>
-        <p class="bio">${escapeHtml(config.bio)}</p>
-        <div class="links">
-            ${linksHtml}
-        </div>
-		${config.socials.length > 0 ? `<div class="socials">${socialsHtml}\n\t\t</div>` : ''}
+		${avatarHtml}
+		<h1 class="name">${esc(config.name)}</h1>
+		<p class="bio">${esc(config.bio)}</p>
+		<div class="links">
+			${buildLinksHtml(config)}
+		</div>
+		${socialsSection}
 	</div>
-    <div class="footer">
-        <a href="https://github.com/furryweekend/Pawprint">Powered by Pawprint</a>
-    </div>
+	<div class="footer">
+		<a href="https://github.com/furryweekend/Pawprint">Powered by Pawprint</a>
+	</div>
 </body>
 </html>`;
 }
