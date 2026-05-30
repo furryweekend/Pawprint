@@ -36,13 +36,11 @@ Every pull request must pass two checks in CI:
    ```bash
    npx vitest run
    ```
+   This runs automatically via GitHub Actions on every PR.
 
-2. **Build** — verify the Worker compiles:
-   ```bash
-   npm run build
-   ```
+2. **Cloudflare Workers build** — the [Cloudflare Workers and Pages](https://github.com/apps/cloudflare-workers-and-pages) GitHub app builds and deploys a preview for every PR. If the Worker fails to compile, this check will fail.
 
-Both of these run automatically on every PR via GitHub Actions. Your PR will not be merged if either check fails.
+Your PR will not be merged if either check fails.
 
 ## Writing Tests
 
