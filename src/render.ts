@@ -18,7 +18,7 @@ export function renderProfilePage(config: PawprintConfig): string {
     const containerCss = getContainerStyles(theme);
 	const fontImport = getFontImport(theme);
 	const textColor = theme.textColor ?? '#ffffff';
-	const fontFamily = theme.font ?? 'Inter';
+	const fontFamily = (theme.font ?? 'Inter').replace(/\+/g, ' ');
 	const isBackgroundImage = !!theme.backgroundImage;
 
 	const headerHtml = config.header

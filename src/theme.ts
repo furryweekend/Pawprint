@@ -61,8 +61,8 @@ export function getContainerStyles(theme:Theme): string {
 }
 
 export function getFontImport(theme: Theme): string {
-	const font = theme.font ?? 'Inter';
-	return `@import url('https://fonts.googleapis.com/css2?family=${font}:wght@400;500;600;700&display=swap');`;
+	const font = (theme.font ?? 'Inter').replace(/\+/g, ' ');
+	return `@import url('https://fonts.googleapis.com/css2?family=${encodeURIComponent(font)}:wght@400;500;600;700&display=swap');`;
 }
 
 export { gradients };
