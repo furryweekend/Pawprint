@@ -2,6 +2,8 @@
 
 An open-source, self-hosted link-in-bio page with click tracking analytics that runs entirely on [Cloudflare Workers](https://workers.cloudflare.com). Think Linktree but free, fast, and fully yours.
 
+**See it in action:** [links.furryweekend.com](https://links.furryweekend.com)
+
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/furryweekend/Pawprint)
 
 ## Features
