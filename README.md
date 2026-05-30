@@ -78,13 +78,15 @@ KV config takes priority over `config.json`. If you've made changes via the admi
 }
 ```
 
-### Link Icons
+### Icons
 
-Available icons for links: `globe`, `pencil`, `heart`, `star`, `link`, `music`, `shop`, `coffee`, `camera`, `book`
+Links and socials use [Font Awesome Free](https://fontawesome.com/search?o=r&m=free) icons. You can use **any** icon name from the Font Awesome Free library — just set the `icon` field to the icon name (e.g. `paw`, `rocket`, `code`, `dog`).
 
-### Social Platforms
+Common presets:
+- **Link icons:** `globe`, `pencil`, `heart`, `star`, `link`, `music`, `shop`, `coffee`, `camera`, `book`
+- **Social platforms:** `twitter`, `github`, `instagram`, `youtube`, `discord`, `twitch`, `mastodon`, `bluesky`, `telegram`, `linkedin`, `tiktok`, `email`
 
-Supported platforms with built-in icons: `twitter`, `github`, `instagram`, `youtube`, `discord`, `twitch`, `mastodon`, `bluesky`, `telegram`, `linkedin`, `tiktok`, `email`
+Social platform names can also be used as link icons. Browse all available icons at [fontawesome.com/search](https://fontawesome.com/search?o=r&m=free).
 
 ### Theme Options
 
@@ -212,7 +214,7 @@ npm run deploy
 │   ├── admin.ts             # Admin panel HTML renderer
 │   ├── config.ts            # Config loading (KV + file fallback)
 │   ├── theme.ts             # Gradient presets and CSS generation
-│   ├── icons.ts             # SVG social media and link icons
+│   ├── icons.ts             # Font Awesome icon mappings
 │   ├── auth.ts              # Session cookie auth
 │   └── types.ts             # TypeScript type definitions
 ├── public/
