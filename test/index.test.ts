@@ -1,5 +1,6 @@
 import { env, SELF } from 'cloudflare:test';
 import { describe, it, expect, beforeAll } from 'vitest';
+import defaultConfig from '../config.json';
 
 async function getAuthCookie(): Promise<string> {
 	const res = await SELF.fetch('https://localhost/api/auth', {
@@ -28,8 +29,8 @@ describe('Profile page', () => {
 		const res = await SELF.fetch('https://localhost/');
 		expect(res.status).toBe(200);
 		const html = await res.text();
-		expect(html).toContain('Your Name');
-		expect(html).toContain('A short bio about yourself.');
+		expect(html).toContain(defaultConfig.name);
+		expect(html).toContain(defaultConfig.bio);
 		expect(html).toContain('/click/0');
 	});
 
@@ -37,7 +38,7 @@ describe('Profile page', () => {
 		const res = await SELF.fetch('https://localhost/');
 		const html = await res.text();
 		expect(html).toContain('<meta name="twitter:card" content="summary_large_image" />');
-		expect(html).toContain('<meta property="og:title" content="Your Name" />');
+		expect(html).toContain(`<meta property="og:title" content="${defaultConfig.name}" />`);
 		expect(html).toContain('<meta property="og:image" content="https://localhost/og.png" />');
 	});
 
@@ -79,7 +80,7 @@ describe('Click tracking', () => {
 	it('redirects to the correct URL', async () => {
 		const res = await SELF.fetch('https://localhost/click/0', { redirect: 'manual' });
 		expect(res.status).toBe(302);
-		expect(res.headers.get('location')).toBe('https://example.com');
+		expect(res.headers.get('location')).toBe(defaultConfig.links[0].url);
 	});
 
 	it('returns 404 for invalid link index', async () => {
@@ -148,8 +149,8 @@ describe('Admin', () => {
 		});
 		expect(res.status).toBe(200);
 		const data = (await res.json()) as { name: string; links: unknown[] };
-		expect(data.name).toBe('Your Name');
-		expect(data.links).toHaveLength(3);
+		expect(data.name).toBe(defaultConfig.name);
+		expect(data.links).toHaveLength(defaultConfig.links.length);
 	});
 
 	it('saves and loads config via KV', async () => {
