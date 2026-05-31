@@ -179,6 +179,15 @@
 
 		.link-table tr:last-child td { border-bottom: none; }
 
+		.link-table tbody tr {
+			cursor: pointer;
+			transition: background 0.15s;
+		}
+
+		.link-table tbody tr:hover {
+			background: #334155;
+		}
+
 		.link-url {
 			color: #94a3b8;
 			font-size: 0.8rem;
@@ -199,9 +208,71 @@
 			height: 250px;
 		}
 
+		/* Two-column grid for referrers/countries */
+		.two-col {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 1.5rem;
+			margin-bottom: 1.5rem;
+		}
+
+		.list-item {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 8px 0;
+			border-bottom: 1px solid #334155;
+			font-size: 0.875rem;
+		}
+
+		.list-item:last-child { border-bottom: none; }
+
+		.list-item .name {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			max-width: 70%;
+		}
+
+		.list-item .count {
+			font-weight: 600;
+			font-variant-numeric: tabular-nums;
+			color: #94a3b8;
+		}
+
+		/* Back button */
+		.back-btn {
+			padding: 8px 14px;
+			font-size: 0.85rem;
+			background: #1e293b;
+			border: 1px solid #334155;
+			margin-bottom: 1.5rem;
+		}
+
+		.back-btn:hover {
+			border-color: #6366f1;
+		}
+
+		/* Detail view */
+		#detail-view { display: none; }
+
+		.detail-title {
+			font-size: 1.25rem;
+			font-weight: 600;
+			margin-bottom: 0.25rem;
+		}
+
+		.detail-url {
+			color: #94a3b8;
+			font-size: 0.85rem;
+			margin-bottom: 1.5rem;
+			word-break: break-all;
+		}
+
 		/* Responsive */
 		@media (max-width: 600px) {
 			.stats-grid { grid-template-columns: 1fr 1fr; }
+			.two-col { grid-template-columns: 1fr; }
 		}
 	</style>
 </head>
@@ -209,7 +280,7 @@
 	<div class="container">
 		<div id="login-section">
 			<form id="login-form">
-				<h2>🐾 Pawprint Analytics</h2>
+				<h2>Pawprint Analytics</h2>
 				<input type="password" id="password" placeholder="Enter your analytics password" required />
 				<button type="submit">Log In</button>
 				<p class="error" id="login-error"></p>
@@ -217,37 +288,76 @@
 		</div>
 
 		<div id="dashboard">
-			<h1>🐾 Pawprint Analytics</h1>
+			<h1>Pawprint Analytics</h1>
 			<p class="subtitle">Link click analytics dashboard</p>
 
-			<div class="controls">
+			<div class="controls" id="main-controls">
 				<button data-days="7">7 days</button>
 				<button data-days="30" class="active">30 days</button>
 				<button data-days="90">90 days</button>
 				<button data-days="365">1 year</button>
 			</div>
 
-			<div class="stats-grid" id="stats-grid"></div>
+			<div id="overview-section">
+				<div class="stats-grid" id="stats-grid"></div>
 
-			<div class="card">
-				<h3>Clicks over time</h3>
-				<div class="chart-wrapper">
-					<canvas id="timeline-chart"></canvas>
+				<div class="card">
+					<h3>Clicks over time</h3>
+					<div class="chart-wrapper">
+						<canvas id="timeline-chart"></canvas>
+					</div>
+				</div>
+
+				<div class="two-col">
+					<div class="card">
+						<h3>Top Referrers</h3>
+						<div id="referrers-list"></div>
+					</div>
+					<div class="card">
+						<h3>Top Countries</h3>
+						<div id="countries-list"></div>
+					</div>
+				</div>
+
+				<div class="card">
+					<h3>Links</h3>
+					<table class="link-table">
+						<thead>
+							<tr>
+								<th>Title</th>
+								<th>URL</th>
+								<th>Clicks</th>
+							</tr>
+						</thead>
+						<tbody id="links-table-body"></tbody>
+					</table>
 				</div>
 			</div>
 
-			<div class="card">
-				<h3>Links</h3>
-				<table class="link-table">
-					<thead>
-						<tr>
-							<th>Title</th>
-							<th>URL</th>
-							<th>Clicks</th>
-						</tr>
-					</thead>
-					<tbody id="links-table-body"></tbody>
-				</table>
+			<div id="detail-view">
+				<button class="back-btn" id="back-btn">&larr; Back to overview</button>
+				<div class="detail-title" id="detail-title"></div>
+				<div class="detail-url" id="detail-url"></div>
+
+				<div class="stats-grid" id="detail-stats"></div>
+
+				<div class="card">
+					<h3>Clicks over time</h3>
+					<div class="chart-wrapper">
+						<canvas id="detail-chart"></canvas>
+					</div>
+				</div>
+
+				<div class="two-col">
+					<div class="card">
+						<h3>Top Referrers</h3>
+						<div id="detail-referrers"></div>
+					</div>
+					<div class="card">
+						<h3>Top Countries</h3>
+						<div id="detail-countries"></div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -255,6 +365,7 @@
 	<script>
 		let currentDays = 30;
 		let timelineChart = null;
+		let detailChart = null;
 
 		document.getElementById('login-form').addEventListener('submit', async (e) => {
 			e.preventDefault();
@@ -282,13 +393,24 @@
 			}
 		});
 
-		document.querySelectorAll('.controls button').forEach((btn) => {
+		document.querySelectorAll('#main-controls button').forEach((btn) => {
 			btn.addEventListener('click', () => {
-				document.querySelector('.controls .active')?.classList.remove('active');
+				document.querySelector('#main-controls .active')?.classList.remove('active');
 				btn.classList.add('active');
 				currentDays = parseInt(btn.dataset.days);
-				loadAnalytics();
+				if (document.getElementById('detail-view').style.display === 'block') {
+					const idx = document.getElementById('detail-view').dataset.linkIndex;
+					loadLinkDetail(parseInt(idx));
+				} else {
+					loadAnalytics();
+				}
 			});
+		});
+
+		document.getElementById('back-btn').addEventListener('click', () => {
+			document.getElementById('overview-section').style.display = 'block';
+			document.getElementById('detail-view').style.display = 'none';
+			loadAnalytics();
 		});
 
 		async function loadAnalytics() {
@@ -305,6 +427,8 @@
 				const data = await res.json();
 				renderStats(data);
 				renderTimeline(data.timeline);
+				renderReferrers(data.topReferrers, 'referrers-list');
+				renderCountries(data.topCountries, 'countries-list');
 				renderLinksTable(data);
 			} catch (err) {
 				console.error('Failed to load analytics:', err);
@@ -316,6 +440,10 @@
 			const grid = document.getElementById('stats-grid');
 
 			grid.innerHTML = `
+				<div class="stat">
+					<div class="label">Page Visits</div>
+					<div class="value">${(data.pageVisits || 0).toLocaleString()}</div>
+				</div>
 				<div class="stat">
 					<div class="label">Total Clicks</div>
 					<div class="value">${totalClicks.toLocaleString()}</div>
@@ -372,6 +500,34 @@
 			});
 		}
 
+		function renderReferrers(referrers, containerId) {
+			const container = document.getElementById(containerId);
+			if (!referrers || referrers.length === 0) {
+				container.innerHTML = '<p style="color:#94a3b8;font-size:0.875rem;">No referrer data yet</p>';
+				return;
+			}
+			container.innerHTML = referrers.map((r) => `
+				<div class="list-item">
+					<span class="name" title="${escapeHtml(r.referer)}">${escapeHtml(formatReferrer(r.referer))}</span>
+					<span class="count">${r.clicks.toLocaleString()}</span>
+				</div>
+			`).join('');
+		}
+
+		function renderCountries(countries, containerId) {
+			const container = document.getElementById(containerId);
+			if (!countries || countries.length === 0) {
+				container.innerHTML = '<p style="color:#94a3b8;font-size:0.875rem;">No country data yet</p>';
+				return;
+			}
+			container.innerHTML = countries.map((c) => `
+				<div class="list-item">
+					<span class="name">${escapeHtml(c.country)}</span>
+					<span class="count">${c.clicks.toLocaleString()}</span>
+				</div>
+			`).join('');
+		}
+
 		function renderLinksTable(data) {
 			const tbody = document.getElementById('links-table-body');
 			const clickMap = {};
@@ -381,13 +537,100 @@
 
 			tbody.innerHTML = data.links
 				.map((link, i) => `
-					<tr>
+					<tr data-index="${i}">
 						<td>${escapeHtml(link.title)}</td>
 						<td class="link-url" title="${escapeHtml(link.url)}">${escapeHtml(link.url)}</td>
 						<td class="clicks-count">${(clickMap[i] || 0).toLocaleString()}</td>
 					</tr>
 				`)
 				.join('');
+
+			tbody.querySelectorAll('tr').forEach((row) => {
+				row.addEventListener('click', () => {
+					const index = parseInt(row.dataset.index);
+					loadLinkDetail(index);
+				});
+			});
+		}
+
+		async function loadLinkDetail(index) {
+			try {
+				const res = await fetch(`/api/analytics/${index}?days=${currentDays}`);
+				if (!res.ok) return;
+
+				const data = await res.json();
+
+				document.getElementById('overview-section').style.display = 'none';
+				document.getElementById('detail-view').style.display = 'block';
+				document.getElementById('detail-view').dataset.linkIndex = index;
+
+				document.getElementById('detail-title').textContent = data.link.title;
+				document.getElementById('detail-url').textContent = data.link.url;
+
+				document.getElementById('detail-stats').innerHTML = `
+					<div class="stat">
+						<div class="label">Total Clicks</div>
+						<div class="value">${(data.totalClicks || 0).toLocaleString()}</div>
+					</div>
+					<div class="stat">
+						<div class="label">Time Period</div>
+						<div class="value">${currentDays}d</div>
+					</div>
+				`;
+
+				// Render detail chart
+				const ctx = document.getElementById('detail-chart').getContext('2d');
+				if (detailChart) detailChart.destroy();
+
+				detailChart = new Chart(ctx, {
+					type: 'line',
+					data: {
+						labels: data.timeline.map((r) => r.day),
+						datasets: [{
+							label: 'Clicks',
+							data: data.timeline.map((r) => r.clicks),
+							borderColor: '#6366f1',
+							backgroundColor: 'rgba(99, 102, 241, 0.1)',
+							fill: true,
+							tension: 0.3,
+							borderWidth: 2,
+							pointRadius: 2,
+						}],
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						plugins: {
+							legend: { display: false },
+						},
+						scales: {
+							x: {
+								ticks: { color: '#94a3b8', maxTicksLimit: 10 },
+								grid: { color: '#334155' },
+							},
+							y: {
+								ticks: { color: '#94a3b8', precision: 0 },
+								grid: { color: '#334155' },
+								beginAtZero: true,
+							},
+						},
+					},
+				});
+
+				renderReferrers(data.topReferrers, 'detail-referrers');
+				renderCountries(data.topCountries, 'detail-countries');
+			} catch (err) {
+				console.error('Failed to load link detail:', err);
+			}
+		}
+
+		function formatReferrer(url) {
+			try {
+				const u = new URL(url);
+				return u.hostname;
+			} catch {
+				return url || 'Direct';
+			}
 		}
 
 		function escapeHtml(str) {
@@ -395,6 +638,27 @@
 			div.textContent = str;
 			return div.innerHTML;
 		}
+
+		// Auto-check session on page load (skip login if cookie is still valid)
+		(async () => {
+			try {
+				const res = await fetch(`/api/analytics?days=${currentDays}`);
+				if (res.ok) {
+					document.getElementById('login-section').style.display = 'none';
+					document.getElementById('dashboard').style.display = 'block';
+					const data = await res.json();
+					renderStats(data);
+					renderTimeline(data.timeline);
+					renderReferrers(data.topReferrers, 'referrers-list');
+					renderCountries(data.topCountries, 'countries-list');
+					renderLinksTable(data);
+				}
+			} catch {}
+		})();
 	</script>
+	<div style="text-align:center;padding:2rem 0 0.5rem;font-size:0.75rem;">
+		<a href="https://github.com/furryweekend/Pawprint" style="color:#94a3b8;text-decoration:none;">Powered by <i class="fa-solid fa-paw"></i> Pawprint</a>
+	</div>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </body>
 </html>
