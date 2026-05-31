@@ -638,6 +638,23 @@
 			div.textContent = str;
 			return div.innerHTML;
 		}
+
+		// Auto-check session on page load (skip login if cookie is still valid)
+		(async () => {
+			try {
+				const res = await fetch(`/api/analytics?days=${currentDays}`);
+				if (res.ok) {
+					document.getElementById('login-section').style.display = 'none';
+					document.getElementById('dashboard').style.display = 'block';
+					const data = await res.json();
+					renderStats(data);
+					renderTimeline(data.timeline);
+					renderReferrers(data.topReferrers, 'referrers-list');
+					renderCountries(data.topCountries, 'countries-list');
+					renderLinksTable(data);
+				}
+			} catch {}
+		})();
 	</script>
 </body>
 </html>
