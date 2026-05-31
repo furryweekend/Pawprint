@@ -23,6 +23,10 @@ export function getBackground(theme: Theme): string {
 	return gradients[theme.gradient ?? 'sunset'] ?? gradients.sunset;
 }
 
+export function getCardBackground(theme: Theme): string {
+	return theme.color || gradients[theme.gradient ?? 'sunset'] || gradients.sunset;
+}
+
 export function getButtonStyles(theme: Theme): string {
 	const color = theme.buttonColor ?? '#6c63ff';
 	const textColor = theme.buttonTextColor ?? '#ffffff';

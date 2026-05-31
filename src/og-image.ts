@@ -1,11 +1,10 @@
 import { ImageResponse, loadGoogleFont } from 'workers-og';
 import type { PawprintConfig } from './types';
+import { getCardBackground } from './theme';
 
 const WIDTH = 1200;
 const HEIGHT = 630;
 const BIO_MAX_LENGTH = 140;
-const CARD_BG = '#f6f6f6';
-const CARD_TEXT = '#1a1a2e';
 
 // workers-og parses the card via HTMLRewriter and does not decode html entities,
 // so text is emitted raw. Only `<`/`>` could break parsing
@@ -19,6 +18,8 @@ function truncate(str: string, max: number): string {
 
 function buildCardHtml(config: PawprintConfig, name: string, bio: string): string {
 	const theme = config.theme;
+	const background = getCardBackground(theme);
+	const textColor = theme.textColor ?? '#ffffff';
 	const fontFamily = (theme.font ?? 'Inter').replace(/\+/g, ' ');
 
 	const avatar = config.avatar
@@ -28,11 +29,11 @@ function buildCardHtml(config: PawprintConfig, name: string, bio: string): strin
 	const text =
 		`<div style="display:flex;flex-direction:column;max-width:760px;">` +
 		`<div style="display:flex;font-size:72px;font-weight:700;line-height:1.1;">${name}</div>` +
-		`<div style="display:flex;font-size:34px;font-weight:400;line-height:1.4;margin-top:24px;opacity:0.7;">${bio}</div>` +
+		`<div style="display:flex;font-size:34px;font-weight:400;line-height:1.4;margin-top:28px;opacity:0.85;">${bio}</div>` +
 		`</div>`;
 
 	return (
-		`<div style="display:flex;flex-direction:column;justify-content:space-between;width:${WIDTH}px;height:${HEIGHT}px;padding:80px;background:${CARD_BG};color:${CARD_TEXT};font-family:'${fontFamily}';">` +
+		`<div style="display:flex;flex-direction:column;justify-content:space-between;width:${WIDTH}px;height:${HEIGHT}px;padding:80px;background:${background};color:${textColor};font-family:'${fontFamily}';">` +
 		`<div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;">` +
 		text +
 		avatar +
