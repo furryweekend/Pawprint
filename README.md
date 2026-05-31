@@ -31,25 +31,25 @@ An open-source, self-hosted link-in-bio page with click tracking analytics that 
 
 ## Upgrading
 
-If you deployed Pawprint with the one-click **Deploy to Cloudflare** button, your fork is connected to Cloudflare Workers via the GitHub app — so upgrading is just syncing your fork:
-
-1. Go to your fork on GitHub
-2. Click **"Sync fork"** → **"Update branch"**
-3. The Cloudflare Workers GitHub app automatically builds and deploys the update
-
-Any config changes you've made through the admin panel are stored in KV and won't be affected. If you've edited `config.json` directly in your fork, GitHub will flag any merge conflicts during the sync.
-
-<details>
-<summary>Upgrade via Git CLI</summary>
+The one-click deploy creates a copy of Pawprint in your GitHub account. To pull in new updates from the original repo:
 
 ```bash
+# Clone your repo locally (skip if you already have it)
+git clone https://github.com/YOUR_USERNAME/Pawprint.git
+cd Pawprint
+
+# Add the upstream remote (only needed once)
 git remote add upstream https://github.com/furryweekend/Pawprint.git
+
+# Pull the latest changes
 git fetch upstream
 git merge upstream/main
 git push
 ```
 
-</details>
+The Cloudflare Workers GitHub app will automatically build and deploy after you push.
+
+Any config changes you've made through the admin panel are stored in KV and won't be affected. If you've edited `config.json` directly, Git will flag any conflicts during the merge.
 
 ## Configuration
 
