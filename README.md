@@ -33,6 +33,18 @@ An open-source, self-hosted link-in-bio page with click tracking analytics that 
 
 The one-click deploy creates a copy of Pawprint in your GitHub account. To pull in new updates from the original repo:
 
+1. Go to your repository on GitHub
+2. Click the **Actions** tab
+3. Select **Upgrade Pawprint** in the sidebar
+4. Click **Run workflow** → **Run workflow**
+
+The workflow pulls the latest changes from the original Pawprint repo and pushes them to your repository. The Cloudflare Workers GitHub app will automatically build and deploy the update.
+
+Any config changes you've made through the admin panel are stored in KV and won't be affected. If you've edited `config.json` directly, the merge may require manual conflict resolution.
+
+<details>
+<summary>Upgrade via Git CLI</summary>
+
 ```bash
 # Clone your repo locally (skip if you already have it)
 git clone https://github.com/YOUR_USERNAME/Pawprint.git
@@ -47,9 +59,7 @@ git merge upstream/main
 git push
 ```
 
-The Cloudflare Workers GitHub app will automatically build and deploy after you push.
-
-Any config changes you've made through the admin panel are stored in KV and won't be affected. If you've edited `config.json` directly, Git will flag any conflicts during the merge.
+</details>
 
 ## Configuration
 
