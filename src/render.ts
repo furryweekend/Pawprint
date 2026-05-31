@@ -84,9 +84,9 @@ function buildStyles(config: PawprintConfig): string {
 		}
 		.social-icon:hover { opacity: 1; transform: scale(1.15); }
 
-		.footer { margin: 0 auto; font-size: 0.75rem; }
-		.footer a { color: rgba(255,255,255,0.85); text-decoration: none; background: rgba(0,0,0,0.2); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); padding: 5px 12px; border-radius: 20px; transition: background 0.15s; }
-		.footer a:hover { background: rgba(0,0,0,0.35); text-decoration: none; }
+		.footer { margin: 0 auto; font-size: 0.65rem; letter-spacing: 0.02em; }
+		.footer a { color: rgba(255,255,255,0.55); text-decoration: none; background: rgba(0,0,0,0.12); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); padding: 3px 10px; border-radius: 12px; transition: color 0.15s; }
+		.footer a:hover { color: rgba(255,255,255,0.85); }
 
 		.bounce-button { animation: bounce 2s infinite; }
 		@keyframes bounce {
