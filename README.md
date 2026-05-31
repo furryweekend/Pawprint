@@ -29,6 +29,39 @@ An open-source, self-hosted link-in-bio page with click tracking analytics that 
 3. Edit `config.json` in your new repository to customize your page
 4. Push your changes — your page auto-deploys
 
+## Upgrading
+
+The one-click deploy creates a copy of Pawprint in your GitHub account. To pull in new updates from the original repo:
+
+1. Go to your repository on GitHub
+2. Click the **Actions** tab
+3. Select **Upgrade Pawprint** in the sidebar
+4. Click **Run workflow** → **Run workflow**
+5. Review and merge the PR that gets created
+
+The workflow pulls the latest changes from the original Pawprint repo and opens a pull request so you can review before merging. Once merged, the Cloudflare Workers GitHub app will automatically build and deploy the update.
+
+Any config changes you've made through the admin panel are stored in KV and won't be affected. If you've edited `config.json` directly, the merge may require manual conflict resolution.
+
+<details>
+<summary>Upgrade via Git CLI</summary>
+
+```bash
+# Clone your repo locally (skip if you already have it)
+git clone https://github.com/YOUR_USERNAME/Pawprint.git
+cd Pawprint
+
+# Add the upstream remote (only needed once)
+git remote add upstream https://github.com/furryweekend/Pawprint.git
+
+# Pull the latest changes
+git fetch upstream
+git merge upstream/main
+git push
+```
+
+</details>
+
 ## Configuration
 
 There are two ways to configure your Pawprint page:
