@@ -30,6 +30,19 @@ app.use('/api/*', requireAuth);
 app.get('/', async (event) => {
 	const env = getEnv(event);
 	const config = await getConfig(env.CONFIG_KV);
+
+	event.waitUntil(
+		env.DB.prepare(
+			'INSERT INTO page_visits (referer, country, user_agent) VALUES (?, ?, ?)',
+		)
+			.bind(
+				event.req.headers.get('referer') ?? '',
+				(event.req as unknown as { cf?: { country?: string } }).cf?.country ?? '',
+				event.req.headers.get('user-agent') ?? '',
+			)
+			.run(),
+	);
+
 	return new Response(renderProfilePage(config), {
 		headers: { 'Content-Type': 'text/html; charset=utf-8' },
 	});
@@ -99,7 +112,7 @@ app.get('/api/analytics', async (event) => {
 	const days = parseInt(url.searchParams.get('days') ?? '30', 10);
 	const since = new Date(Date.now() - days * 86400000).toISOString();
 
-	const [totals, timeline] = await Promise.all([
+	const [totals, timeline, referrers, countries, pageVisits] = await Promise.all([
 		env.DB.prepare(
 			'SELECT link_index, link_title, destination_url, COUNT(*) as clicks FROM clicks WHERE clicked_at >= ? GROUP BY link_index ORDER BY clicks DESC',
 		)
@@ -110,11 +123,27 @@ app.get('/api/analytics', async (event) => {
 		)
 			.bind(since)
 			.all(),
+		env.DB.prepare(
+			"SELECT referer, COUNT(*) as clicks FROM clicks WHERE clicked_at >= ? AND referer != '' GROUP BY referer ORDER BY clicks DESC LIMIT 10",
+		)
+			.bind(since)
+			.all(),
+		env.DB.prepare(
+			"SELECT country, COUNT(*) as clicks FROM clicks WHERE clicked_at >= ? AND country != '' GROUP BY country ORDER BY clicks DESC LIMIT 10",
+		)
+			.bind(since)
+			.all(),
+		env.DB.prepare('SELECT COUNT(*) as visits FROM page_visits WHERE visited_at >= ?')
+			.bind(since)
+			.first(),
 	]);
 
 	return {
 		totals: totals.results,
 		timeline: timeline.results,
+		topReferrers: referrers.results,
+		topCountries: countries.results,
+		pageVisits: (pageVisits as Record<string, number> | null)?.visits ?? 0,
 		links: config.links,
 	};
 });

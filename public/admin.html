@@ -150,11 +150,22 @@
 						<input type="color" id="cfg-containercolor" value="#ffffff" />
 					</div>
 
+					<div class="section">
+						<h2>General</h2>
+						<label class="checkbox-label">
+							<input type="checkbox" id="cfg-showfooter" checked />
+							Show "Powered by Pawprint" footer
+						</label>
+					</div>
+
 					<div class="actions">
 						<button type="button" class="save-btn" id="save-btn">Save Changes</button>
 						<button type="button" class="reset-btn" id="reset-btn">Reset</button>
 					</div>
 				</form>
+				<div style="text-align:center;padding:1.5rem 0 0.5rem;font-size:0.75rem;">
+					<a href="https://github.com/furryweekend/Pawprint" style="color:#94a3b8;text-decoration:none;">Powered by <i class="fa-solid fa-paw"></i> Pawprint</a>
+				</div>
 			</div>
 		</div>
 
@@ -169,5 +180,6 @@
 	<div id="toast" class="toast"></div>
 
 	<script src="/admin.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </body>
 </html>

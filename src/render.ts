@@ -84,9 +84,9 @@ function buildStyles(config: PawprintConfig): string {
 		}
 		.social-icon:hover { opacity: 1; transform: scale(1.15); }
 
-		.footer { margin: 0 auto; opacity: 0.4; font-size: 0.75rem; }
-		.footer a { color: inherit; text-decoration: none; }
-		.footer a:hover { text-decoration: underline; }
+		.footer { margin: 0 auto; font-size: 0.65rem; letter-spacing: 0.02em; }
+		.footer a { color: rgba(255,255,255,0.55); text-decoration: none; background: rgba(0,0,0,0.12); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); padding: 3px 10px; border-radius: 12px; transition: color 0.15s; }
+		.footer a:hover { color: rgba(255,255,255,0.85); }
 
 		.bounce-button { animation: bounce 2s infinite; }
 		@keyframes bounce {
@@ -150,6 +150,11 @@ export function renderProfilePage(config: PawprintConfig): string {
 		? `<div class="socials">${buildSocialsHtml(config)}</div>`
 		: '';
 
+	const showFooter = config.showFooter !== false;
+	const footerHtml = showFooter
+		? `<div class="footer">\n\t\t<a href="https://github.com/furryweekend/Pawprint">Powered by <i class="fa-solid fa-paw"></i> Pawprint</a>\n\t</div>`
+		: '';
+
 	return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -173,9 +178,7 @@ export function renderProfilePage(config: PawprintConfig): string {
 		</div>
 		${socialsSection}
 	</div>
-	<div class="footer">
-		<a href="https://github.com/furryweekend/Pawprint">Powered by Pawprint</a>
-	</div>
+	${footerHtml}
 </body>
 </html>`;
 }

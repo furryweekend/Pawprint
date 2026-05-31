@@ -16,9 +16,14 @@ async function setupDb() {
 	await env.DB.exec(
 		"CREATE TABLE IF NOT EXISTS clicks (id INTEGER PRIMARY KEY AUTOINCREMENT, link_index INTEGER NOT NULL, link_title TEXT NOT NULL, destination_url TEXT NOT NULL, referer TEXT DEFAULT '', country TEXT DEFAULT '', user_agent TEXT DEFAULT '', clicked_at TEXT NOT NULL DEFAULT (datetime('now')))",
 	);
+	await env.DB.exec(
+		"CREATE TABLE IF NOT EXISTS page_visits (id INTEGER PRIMARY KEY AUTOINCREMENT, referer TEXT DEFAULT '', country TEXT DEFAULT '', user_agent TEXT DEFAULT '', visited_at TEXT NOT NULL DEFAULT (datetime('now')))",
+	);
 }
 
 describe('Profile page', () => {
+	beforeAll(setupDb);
+
 	it('renders the profile page at /', async () => {
 		const res = await SELF.fetch('https://localhost/');
 		expect(res.status).toBe(200);
@@ -119,6 +124,8 @@ describe('Auth', () => {
 });
 
 describe('Admin', () => {
+	beforeAll(setupDb);
+
 	it('serves admin page as static asset', async () => {
 		const res = await SELF.fetch('https://localhost/admin');
 		expect(res.status).toBe(200);
@@ -204,10 +211,20 @@ describe('Analytics API', () => {
 			headers: { Cookie: cookie },
 		});
 		expect(res.status).toBe(200);
-		const data = (await res.json()) as { totals: unknown[]; timeline: unknown[]; links: unknown[] };
+		const data = (await res.json()) as {
+			totals: unknown[];
+			timeline: unknown[];
+			links: unknown[];
+			topReferrers: unknown[];
+			topCountries: unknown[];
+			pageVisits: number;
+		};
 		expect(data).toHaveProperty('totals');
 		expect(data).toHaveProperty('timeline');
 		expect(data).toHaveProperty('links');
+		expect(data).toHaveProperty('topReferrers');
+		expect(data).toHaveProperty('topCountries');
+		expect(data).toHaveProperty('pageVisits');
 	});
 
 	it('returns per-link analytics', async () => {
