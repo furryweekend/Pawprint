@@ -33,12 +33,12 @@ describe('Profile page', () => {
 		expect(html).toContain('/click/0');
 	});
 
-	it('emits social preview meta tags falling back to profile fields', async () => {
+	it('emits social preview meta tags with a generated card image fallback', async () => {
 		const res = await SELF.fetch('https://localhost/');
 		const html = await res.text();
 		expect(html).toContain('<meta name="twitter:card" content="summary_large_image" />');
 		expect(html).toContain('<meta property="og:title" content="Your Name" />');
-		expect(html).toContain('<meta property="og:image" content="https://placehold.co/150" />');
+		expect(html).toContain('<meta property="og:image" content="https://localhost/og.png" />');
 	});
 
 	it('uses socialPreview overrides when configured', async () => {
@@ -69,6 +69,7 @@ describe('Profile page', () => {
 		expect(html).toContain('<meta property="og:description" content="Share description" />');
 		expect(html).toContain('<meta property="og:image" content="https://example.com/share-card.png" />');
 		expect(html).toContain('<meta name="twitter:image" content="https://example.com/share-card.png" />');
+		expect(html).not.toContain('/og.png');
 	});
 });
 

@@ -96,11 +96,11 @@ function buildStyles(config: PawprintConfig): string {
 		}`;
 }
 
-function buildMetaTags(config: PawprintConfig): string {
+function buildMetaTags(config: PawprintConfig, origin?: string): string {
 	const sp = config.socialPreview ?? {};
 	const title = sp.title || config.name;
 	const description = sp.description || config.bio;
-	const image = sp.image || config.avatar;
+	const image = sp.image || (origin ? `${origin}/og.png` : config.avatar);
 
 	const tags = [
 		`<meta property="og:type" content="website" />`,
@@ -137,7 +137,7 @@ function buildSocialsHtml(config: PawprintConfig): string {
 		.join('\n\t\t\t');
 }
 
-export function renderProfilePage(config: PawprintConfig): string {
+export function renderProfilePage(config: PawprintConfig, origin?: string): string {
 	const headerHtml = config.header
 		? `<div class="header"><img src="${esc(config.header)}" alt="Header" /></div>`
 		: '';
@@ -163,7 +163,7 @@ export function renderProfilePage(config: PawprintConfig): string {
 	<title>${esc(config.name)}</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<meta name="description" content="${esc(config.bio)}" />
-	${buildMetaTags(config)}
+	${buildMetaTags(config, origin)}
 	<style>${buildStyles(config)}</style>
 </head>
 <body>

@@ -1,5 +1,6 @@
 import { H3, H3Event } from 'h3/cloudflare';
 import { renderProfilePage } from './render';
+import { renderOgImage } from './og-image';
 import { createSession, verifySession, getSessionCookie, parseSessionCookie } from './auth';
 import { getConfig, saveConfig } from './config';
 import type { PawprintConfig } from './types';
@@ -9,6 +10,21 @@ const app = new H3();
 function getEnv(event: H3Event): Env {
 	const rt = event.runtime as { cloudflare?: { env?: Env } } | undefined;
 	return rt?.cloudflare?.env as Env;
+}
+
+function ogCacheKey(requestUrl: string, config: PawprintConfig): Request {
+	const { name, bio, avatar, theme } = config;
+	const url = new URL(requestUrl);
+	url.search = new URLSearchParams({
+		name,
+		bio,
+		avatar,
+		font: theme.font ?? '',
+		color: theme.color ?? '',
+		gradient: theme.gradient ?? '',
+		textColor: theme.textColor ?? '',
+	}).toString();
+	return new Request(url);
 }
 
 async function requireAuth(event: H3Event, next: () => unknown) {
@@ -30,6 +46,7 @@ app.use('/api/*', requireAuth);
 app.get('/', async (event) => {
 	const env = getEnv(event);
 	const config = await getConfig(env.CONFIG_KV);
+	const origin = new URL(event.req.url).origin;
 
 	event.waitUntil(
 		env.DB.prepare(
@@ -43,9 +60,39 @@ app.get('/', async (event) => {
 			.run(),
 	);
 
-	return new Response(renderProfilePage(config), {
+	return new Response(renderProfilePage(config, origin), {
 		headers: { 'Content-Type': 'text/html; charset=utf-8' },
 	});
+});
+
+app.get('/og.png', async (event) => {
+	const env = getEnv(event);
+	const config = await getConfig(env.CONFIG_KV);
+
+	const cacheKey = ogCacheKey(event.req.url, config);
+	const cache = caches.default;
+	const cached = await cache.match(cacheKey);
+	if (cached) return cached;
+
+	let body: ArrayBuffer;
+	try {
+		const image = await renderOgImage(config);
+		body = await image.arrayBuffer();
+	} catch {
+		return new Response('Failed to generate OG image', { status: 500 });
+	}
+
+	const response = new Response(body, {
+		headers: {
+			'Content-Type': 'image/png',
+			'Cache-Control': 'public, max-age=86400',
+		},
+	});
+
+	if (body.byteLength > 0) {
+		event.waitUntil(cache.put(cacheKey, response.clone()));
+	}
+	return response;
 });
 
 app.get('/click/:index', async (event) => {
