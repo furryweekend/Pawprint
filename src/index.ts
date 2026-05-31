@@ -74,8 +74,14 @@ app.get('/og.png', async (event) => {
 	const cached = await cache.match(cacheKey);
 	if (cached) return cached;
 
-	const image = await renderOgImage(config);
-	const body = await image.arrayBuffer();
+	let body: ArrayBuffer;
+	try {
+		const image = await renderOgImage(config);
+		body = await image.arrayBuffer();
+	} catch {
+		return new Response('Failed to generate OG image', { status: 500 });
+	}
+
 	const response = new Response(body, {
 		headers: {
 			'Content-Type': 'image/png',
