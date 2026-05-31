@@ -37,8 +37,9 @@ The one-click deploy creates a copy of Pawprint in your GitHub account. To pull 
 2. Click the **Actions** tab
 3. Select **Upgrade Pawprint** in the sidebar
 4. Click **Run workflow** → **Run workflow**
+5. Review and merge the PR that gets created
 
-The workflow pulls the latest changes from the original Pawprint repo and pushes them to your repository. The Cloudflare Workers GitHub app will automatically build and deploy the update.
+The workflow pulls the latest changes from the original Pawprint repo and opens a pull request so you can review before merging. Once merged, the Cloudflare Workers GitHub app will automatically build and deploy the update.
 
 Any config changes you've made through the admin panel are stored in KV and won't be affected. If you've edited `config.json` directly, the merge may require manual conflict resolution.
 
