@@ -150,6 +150,11 @@ export function renderProfilePage(config: PawprintConfig): string {
 		? `<div class="socials">${buildSocialsHtml(config)}</div>`
 		: '';
 
+	const showFooter = config.showFooter !== false;
+	const footerHtml = showFooter
+		? `<div class="footer">\n\t\t<a href="https://github.com/furryweekend/Pawprint">Powered by <i class="fa-solid fa-paw"></i> Pawprint</a>\n\t</div>`
+		: '';
+
 	return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -173,9 +178,7 @@ export function renderProfilePage(config: PawprintConfig): string {
 		</div>
 		${socialsSection}
 	</div>
-	<div class="footer">
-		<a href="https://github.com/furryweekend/Pawprint">Powered by <i class="fa-solid fa-paw"></i> Pawprint</a>
-	</div>
+	${footerHtml}
 </body>
 </html>`;
 }

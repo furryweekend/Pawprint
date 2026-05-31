@@ -117,6 +117,8 @@ function populateForm(config) {
 	$('cfg-container').value = theme.container || 'none';
 	$('cfg-containerradius').value = theme.containerRadius || '12px';
 	$('cfg-containercolor').value = theme.containerColor || '#ffffff';
+
+	$('cfg-showfooter').checked = config.showFooter !== false;
 }
 
 function collectConfig() {
@@ -158,6 +160,7 @@ function collectConfig() {
 		avatar: $('cfg-avatar').value.trim(),
 		header: $('cfg-header').value.trim() || undefined,
 		socialPreview: socialPreview,
+		showFooter: $('cfg-showfooter').checked,
 		links: links,
 		socials: socials,
 		theme: {

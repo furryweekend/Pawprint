@@ -124,6 +124,8 @@ describe('Auth', () => {
 });
 
 describe('Admin', () => {
+	beforeAll(setupDb);
+
 	it('serves admin page as static asset', async () => {
 		const res = await SELF.fetch('https://localhost/admin');
 		expect(res.status).toBe(200);

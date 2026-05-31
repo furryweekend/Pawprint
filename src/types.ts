@@ -40,4 +40,5 @@ export interface PawprintConfig {
 	socials: SocialItem[];
 	theme: Theme;
 	socialPreview?: SocialPreview;
+	showFooter?: boolean;
 }
