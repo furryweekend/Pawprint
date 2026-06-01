@@ -108,6 +108,8 @@ function populateForm(config) {
 	$('cfg-color-enabled').checked = !!theme.color;
 	$('cfg-color').value = theme.color || '#1a1a2e';
 	$('cfg-bgimage').value = theme.backgroundImage || '';
+	$('cfg-bgblur').value = theme.backgroundBlur || 0;
+	$('cfg-bgblur-value').textContent = ($('cfg-bgblur').value || 0) + 'px';
 	$('cfg-textcolor').value = theme.textColor || '#ffffff';
 	$('cfg-font').value = theme.font || 'Inter';
 	$('cfg-buttonstyle').value = theme.buttonStyle || 'filled';
@@ -167,6 +169,7 @@ function collectConfig() {
 			gradient: $('cfg-gradient').value || undefined,
 			color: $('cfg-color-enabled').checked ? $('cfg-color').value : undefined,
 			backgroundImage: $('cfg-bgimage').value.trim() || undefined,
+			backgroundBlur: parseInt($('cfg-bgblur').value, 10) || undefined,
 			textColor: $('cfg-textcolor').value,
 			font: $('cfg-font').value.trim() || 'Inter',
 			buttonStyle: $('cfg-buttonstyle').value,
@@ -259,5 +262,8 @@ $('add-link-btn').addEventListener('click', addLink);
 $('add-social-btn').addEventListener('click', addSocial);
 $('admin-form').addEventListener('input', schedulePreviewUpdate);
 $('admin-form').addEventListener('change', schedulePreviewUpdate);
+$('cfg-bgblur').addEventListener('input', function() {
+	$('cfg-bgblur-value').textContent = $('cfg-bgblur').value + 'px';
+});
 
 loadAdmin();

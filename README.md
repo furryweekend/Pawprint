@@ -106,6 +106,7 @@ KV config takes priority over `config.json`. If you've made changes via the admi
   // Theme
   "theme": {
     "gradient": "sunset",
+    "backgroundBlur": 0,  // blur amount (0-10), applied to backgroundImage only
     "textColor": "#ffffff",
     "buttonStyle": "filled",
     "buttonColor": "#6c63ff",

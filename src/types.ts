@@ -20,6 +20,7 @@ export interface Theme {
 	gradient?: string;
 	color?: string;
 	backgroundImage?: string;
+	backgroundBlur?: number;
 	textColor?: string;
 	buttonStyle?: 'filled' | 'outlined' | 'soft';
 	buttonColor?: string;
