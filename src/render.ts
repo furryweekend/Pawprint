@@ -17,6 +17,8 @@ function buildStyles(config: PawprintConfig): string {
 	const fontFamily = (theme.font ?? 'Inter').replace(/\+/g, ' ');
 	const bg = getBackground(theme);
 	const isBackgroundImage = !!theme.backgroundImage;
+	const blur = theme.backgroundBlur ?? 0;
+	const blurLayer = isBackgroundImage && blur > 0;
 
 	return `
 		${getFontImport(theme)}
@@ -32,9 +34,18 @@ function buildStyles(config: PawprintConfig): string {
 			flex-direction: column;
 			align-items: flex-start;
 			padding: 1rem 1rem;
-			background: ${bg};
-			${isBackgroundImage ? 'background-size: cover; background-position: center; background-attachment: fixed;' : ''}
+			background: ${blurLayer ? '#0e0e0e' : bg};
+			${isBackgroundImage && !blurLayer ? 'background-size: cover; background-position: center; background-attachment: fixed;' : ''}
 		}
+		${blurLayer ? `body::before {
+			content: '';
+			position: fixed;
+			inset: 0;
+			z-index: -1;
+			background: url('${theme.backgroundImage}') center/cover no-repeat;
+			filter: blur(${blur}px);
+			transform: scale(1.05); /* let the darker edges get clipped off by the viewport. there might be a better way to do this though. */
+		}` : ''}
 
 		.container {
 			width: 100%;

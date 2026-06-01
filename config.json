@@ -23,14 +23,15 @@
 
 	"theme": {
 		"gradient": "sunset",
+		"backgroundBlur": 0,
 		"textColor": "#000000",
 		"buttonStyle": "filled",
 		"buttonColor": "#6c63ff",
 		"buttonTextColor": "#ffffff",
 		"buttonRadius": "12px",
 		"font": "Nunito",
-        "container": "filled",
-        "containerColor": "#ffffff",
-        "containerRadius": "12px"
+		"container": "filled",
+		"containerColor": "#ffffff",
+		"containerRadius": "12px"
 	}
 }
